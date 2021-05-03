@@ -12,8 +12,8 @@ public class OrderDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private UserDto user;
+    @JsonProperty(value="user", access = JsonProperty.Access.READ_ONLY)
+    private UserDto userDto;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private GiftCertificateDto certificate;
@@ -32,7 +32,7 @@ public class OrderDto {
     public OrderDto(long id, UserDto userDto, GiftCertificateDto certificate,
                     BigDecimal cost, ZonedDateTime createDate) {
         this.id = id;
-        this.user = userDto;
+        this.userDto = userDto;
         this.certificate = certificate;
         this.cost = cost;
         this.createDate = createDate;
@@ -71,11 +71,11 @@ public class OrderDto {
     }
 
     public UserDto getUserDto() {
-        return user;
+        return userDto;
     }
 
     public void setUserDto(UserDto userDto) {
-        this.user = userDto;
+        this.userDto = userDto;
     }
 
     @Override
@@ -85,7 +85,7 @@ public class OrderDto {
 
         OrderDto orderDto = (OrderDto) o;
 
-        if (!Objects.equals(user, orderDto.user)) return false;
+        if (!Objects.equals(userDto, orderDto.userDto)) return false;
         if (!Objects.equals(certificate, orderDto.certificate))
             return false;
         if (!Objects.equals(cost, orderDto.cost)) return false;
@@ -94,7 +94,7 @@ public class OrderDto {
 
     @Override
     public int hashCode() {
-        int result = user != null ? user.hashCode() : 0;
+        int result = userDto != null ? userDto.hashCode() : 0;
         result = 31 * result + (certificate != null ? certificate.hashCode() : 0);
         result = 31 * result + (cost != null ? cost.hashCode() : 0);
         result = 31 * result + (createDate != null ? createDate.hashCode() : 0);

@@ -29,7 +29,7 @@ public class GiftCertificateDto {
     private int duration;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Set<TagDto> tags = new HashSet<>();
+    private Set<TagDto> tags;
 
     @JsonCreator
     public GiftCertificateDto() {

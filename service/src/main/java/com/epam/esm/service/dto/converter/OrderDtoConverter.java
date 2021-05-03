@@ -29,9 +29,10 @@ public class OrderDtoConverter implements DtoConverter<Order, OrderDto> {
         order.setCost(dto.getCost());
         order.setOrderDate(dto.getCreateDate());
         UserDto userDto = dto.getUserDto();
-        order.setUser(userDtoConverter.convertToEntity(userDto));
+        order.setUser(userDto == null ? null : userDtoConverter.convertToEntity(userDto));
         GiftCertificateDto giftCertificateDto = dto.getCertificate();
-        order.setCertificate(certificateDtoConverter.convertToEntity(giftCertificateDto));
+        order.setCertificate(giftCertificateDto == null ? null :
+                certificateDtoConverter.convertToEntity(giftCertificateDto));
 
         return order;
     }

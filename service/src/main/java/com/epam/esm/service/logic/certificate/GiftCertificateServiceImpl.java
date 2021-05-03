@@ -51,14 +51,16 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     public GiftCertificateDto create(GiftCertificateDto giftCertificateDto) {
         validateCertificate(giftCertificateDto);
-        validateTags(giftCertificateDto.getTags());
         Set<Tag> tagsToPersist = new HashSet<>();
-        for (TagDto tagDto: giftCertificateDto.getTags()) {
-            Optional<Tag> tagOptional = tagRepository.findByName(tagDto.getName());
-            if (tagOptional.isPresent()) {
-                tagsToPersist.add(tagOptional.get());
-            } else {
-                tagsToPersist.add(tagDtoConverter.convertToEntity(tagDto));
+        if (giftCertificateDto.getTags() != null) {
+            validateTags(giftCertificateDto.getTags());
+            for (TagDto tagDto : giftCertificateDto.getTags()) {
+                Optional<Tag> tagOptional = tagRepository.findByName(tagDto.getName());
+                if (tagOptional.isPresent()) {
+                    tagsToPersist.add(tagOptional.get());
+                } else {
+                    tagsToPersist.add(tagDtoConverter.convertToEntity(tagDto));
+                }
             }
         }
         GiftCertificate giftCertificate = giftCertificateDtoConverter.convertToEntity(giftCertificateDto);
@@ -121,11 +123,14 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
         GiftCertificate sourceCertificate = giftCertificateOptional.get();
         setUpdatedFields(sourceCertificate, giftCertificateDto);
-        Set<Tag> tags = giftCertificateDto.getTags()
-                .stream()
-                .map(tagDtoConverter::convertToEntity)
-                .collect(Collectors.toSet());
-        sourceCertificate.setTags(saveTags(tags));
+        if (giftCertificateDto.getTags() != null) {
+            validateTags(giftCertificateDto.getTags());
+            Set<Tag> tags = giftCertificateDto.getTags()
+                    .stream()
+                    .map(tagDtoConverter::convertToEntity)
+                    .collect(Collectors.toSet());
+            sourceCertificate.setTags(saveTags(tags));
+        }
         GiftCertificate updatedCertificate = certificateRepository.update(sourceCertificate);
         return giftCertificateDtoConverter.convertToDto(updatedCertificate);
     }
