@@ -1,0 +1,52 @@
+package com.epam.esm.service.dto.converter;
+
+import com.epam.esm.persistence.entity.GiftCertificate;
+import com.epam.esm.persistence.entity.Order;
+import com.epam.esm.persistence.entity.User;
+import com.epam.esm.service.dto.GiftCertificateDto;
+import com.epam.esm.service.dto.OrderDto;
+import com.epam.esm.service.dto.UserDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class OrderDtoConverter implements DtoConverter<Order, OrderDto> {
+
+    private final GiftCertificateDtoConverter certificateDtoConverter;
+    private final UserDtoConverter userDtoConverter;
+
+    @Autowired
+    public OrderDtoConverter(GiftCertificateDtoConverter certificateDtoConverter,
+                             UserDtoConverter userDtoConverter) {
+        this.certificateDtoConverter = certificateDtoConverter;
+        this.userDtoConverter = userDtoConverter;
+    }
+
+    @Override
+    public Order convertToEntity(OrderDto dto) {
+        Order order = new Order();
+        order.setId(dto.getId());
+        order.setCost(dto.getCost());
+        order.setOrderDate(dto.getCreateDate());
+        UserDto userDto = dto.getUserDto();
+        order.setUser(userDtoConverter.convertToEntity(userDto));
+        GiftCertificateDto giftCertificateDto = dto.getCertificate();
+        order.setCertificate(certificateDtoConverter.convertToEntity(giftCertificateDto));
+
+        return order;
+    }
+
+    @Override
+    public OrderDto convertToDto(Order entity) {
+        OrderDto orderDto = new OrderDto();
+        orderDto.setId(entity.getId());
+        orderDto.setCreateDate(entity.getOrderDate());
+        orderDto.setCost(entity.getCost());
+        GiftCertificate giftCertificate = entity.getCertificate();
+        orderDto.setCertificate(certificateDtoConverter.convertToDto(giftCertificate));
+        User user = entity.getUser();
+        orderDto.setUserDto(userDtoConverter.convertToDto(user));
+
+        return orderDto;
+    }
+}
