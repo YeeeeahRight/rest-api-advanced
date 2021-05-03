@@ -9,6 +9,7 @@ import com.epam.esm.service.dto.converter.TagDtoConverter;
 import com.epam.esm.service.exception.DuplicateEntityException;
 import com.epam.esm.service.exception.InvalidEntityException;
 import com.epam.esm.service.exception.NoSuchEntityException;
+import com.epam.esm.service.logic.tag.TagServiceImpl;
 import com.epam.esm.service.validator.TagValidator;
 import org.junit.Before;
 import org.junit.Test;

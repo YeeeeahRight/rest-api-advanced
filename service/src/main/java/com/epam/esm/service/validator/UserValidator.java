@@ -1,15 +1,15 @@
 package com.epam.esm.service.validator;
 
-import com.epam.esm.service.dto.TagDto;
+import com.epam.esm.service.dto.UserDto;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TagValidator implements Validator<TagDto> {
+public class UserValidator implements Validator<UserDto> {
     private static final int NAME_MAX_LENGTH = 60;
     private static final int NAME_MIN_LENGTH = 1;
 
     @Override
-    public boolean isValid(TagDto entity) {
+    public boolean isValid(UserDto entity) {
         String name = entity.getName();
         if (name == null) {
             return false;

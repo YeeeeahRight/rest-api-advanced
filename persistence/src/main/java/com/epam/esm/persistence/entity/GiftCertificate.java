@@ -21,7 +21,7 @@ public class GiftCertificate {
     @Column(nullable = false)
     private BigDecimal price;
 
-    @Column(name = "create_date", nullable = false)
+    @Column(name = "create_date", nullable = false, updatable = false)
     private ZonedDateTime createDate;
 
     @Column(name = "last_update_date", nullable = false)
@@ -143,7 +143,6 @@ public class GiftCertificate {
 
         GiftCertificate that = (GiftCertificate) o;
 
-        if (id != that.id) return false;
         if (duration != that.duration) return false;
         if (!Objects.equals(name, that.name)) return false;
         if (!Objects.equals(description, that.description)) return false;
@@ -151,33 +150,30 @@ public class GiftCertificate {
         if (!Objects.equals(createDate, that.createDate)) return false;
         if (!Objects.equals(lastUpdateDate, that.lastUpdateDate))
             return false;
-        return tags.equals(that.tags);
+        return Objects.equals(tags, that.tags);
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (name != null ? name.hashCode() : 0);
+        int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (price != null ? price.hashCode() : 0);
         result = 31 * result + (createDate != null ? createDate.hashCode() : 0);
         result = 31 * result + (lastUpdateDate != null ? lastUpdateDate.hashCode() : 0);
         result = 31 * result + duration;
-        result = 31 * result + tags.hashCode();
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "GiftCertificate{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
                 ", createDate=" + createDate +
                 ", lastUpdateDate=" + lastUpdateDate +
                 ", duration=" + duration +
-                ", tags=" + tags +
                 '}';
     }
 }

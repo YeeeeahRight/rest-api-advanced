@@ -1,4 +1,4 @@
-package com.epam.esm.service.logic;
+package com.epam.esm.service.logic.certificate;
 
 import com.epam.esm.persistence.repository.GiftCertificateRepository;
 import com.epam.esm.persistence.repository.TagRepository;
@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
-    private final GiftCertificateRepository giftCertificateDao;
-    private final TagRepository tagDao;
+    private final GiftCertificateRepository certificateRepository;
+    private final TagRepository tagRepository;
     private final Validator<GiftCertificateDto> giftCertificateValidator;
     private final Validator<TagDto> tagEntityValidator;
     private final Validator<SortParamsContext> sortParametersValidator;
@@ -31,14 +31,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final TagDtoConverter tagDtoConverter;
 
     @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateRepository giftCertificateDao, TagRepository tagDao,
+    public GiftCertificateServiceImpl(GiftCertificateRepository certificateRepository,
+                                      TagRepository tagRepository,
                                       Validator<GiftCertificateDto> giftCertificateValidator,
                                       Validator<TagDto> tagEntityValidator,
                                       Validator<SortParamsContext> sortParametersValidator,
                                       GiftCertificateDtoConverter giftCertificateDtoConverter,
                                       TagDtoConverter tagDtoConverter) {
-        this.giftCertificateDao = giftCertificateDao;
-        this.tagDao = tagDao;
+        this.certificateRepository = certificateRepository;
+        this.tagRepository = tagRepository;
         this.giftCertificateValidator = giftCertificateValidator;
         this.tagEntityValidator = tagEntityValidator;
         this.sortParametersValidator = sortParametersValidator;
@@ -50,25 +51,27 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     public GiftCertificateDto create(GiftCertificateDto giftCertificateDto) {
         validateCertificate(giftCertificateDto);
-        validateTags(giftCertificateDto.getTags());
         Set<Tag> tagsToPersist = new HashSet<>();
-        for (TagDto tagDto: giftCertificateDto.getTags()) {
-            Optional<Tag> tagOptional = tagDao.findByName(tagDto.getName());
-            if (tagOptional.isPresent()) {
-                tagsToPersist.add(tagOptional.get());
-            } else {
-                tagsToPersist.add(tagDtoConverter.convertToEntity(tagDto));
+        if (giftCertificateDto.getTags() != null) {
+            validateTags(giftCertificateDto.getTags());
+            for (TagDto tagDto : giftCertificateDto.getTags()) {
+                Optional<Tag> tagOptional = tagRepository.findByName(tagDto.getName());
+                if (tagOptional.isPresent()) {
+                    tagsToPersist.add(tagOptional.get());
+                } else {
+                    tagsToPersist.add(tagDtoConverter.convertToEntity(tagDto));
+                }
             }
         }
         GiftCertificate giftCertificate = giftCertificateDtoConverter.convertToEntity(giftCertificateDto);
         giftCertificate.setTags(tagsToPersist);
-        giftCertificate = giftCertificateDao.create(giftCertificate);
+        giftCertificate = certificateRepository.create(giftCertificate);
         return giftCertificateDtoConverter.convertToDto(giftCertificate);
     }
 
     @Override
     public List<GiftCertificateDto> getAll() {
-        List<GiftCertificate> giftCertificates = giftCertificateDao.getAll();
+        List<GiftCertificate> giftCertificates = certificateRepository.getAll();
 
         return giftCertificates
                 .stream()
@@ -79,7 +82,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificateDto getById(long id) {
-        Optional<GiftCertificate> certificateOptional = giftCertificateDao.findById(id);
+        Optional<GiftCertificate> certificateOptional = certificateRepository.findById(id);
         if (!certificateOptional.isPresent()) {
             throw new NoSuchEntityException("certificate.not.found");
         }
@@ -96,18 +99,17 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             SortParamsContext sortParameters = new SortParamsContext(sortColumns, orderTypes);
             validateSortParams(sortParameters);
             if (isFilterExist(tagName, partInfo)) {
-                giftCertificates = giftCertificateDao.getAllWithSortingFiltering(
+                giftCertificates = certificateRepository.getAllWithSortingFiltering(
                         sortParameters, tagName, partInfo);
             } else {
-                giftCertificates = giftCertificateDao.getAllWithSorting(sortParameters);
+                giftCertificates = certificateRepository.getAllWithSorting(sortParameters);
             }
         } else if (isFilterExist(tagName, partInfo)) {
-            giftCertificates = giftCertificateDao.getAllWithFiltering(tagName, partInfo);
+            giftCertificates = certificateRepository.getAllWithFiltering(tagName, partInfo);
         } else {
-            giftCertificates = giftCertificateDao.getAll();
+            giftCertificates = certificateRepository.getAll();
         }
-        return giftCertificates
-                .stream()
+        return giftCertificates.stream()
                 .map(giftCertificateDtoConverter::convertToDto)
                 .collect(Collectors.toList());
     }
@@ -115,29 +117,32 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public GiftCertificateDto updateById(long id, GiftCertificateDto giftCertificateDto) {
-        Optional<GiftCertificate> giftCertificateOptional = giftCertificateDao.findById(id);
+        Optional<GiftCertificate> giftCertificateOptional = certificateRepository.findById(id);
         if (!giftCertificateOptional.isPresent()) {
             throw new NoSuchEntityException("certificate.not.found");
         }
         GiftCertificate sourceCertificate = giftCertificateOptional.get();
         setUpdatedFields(sourceCertificate, giftCertificateDto);
-        Set<Tag> tags = giftCertificateDto.getTags()
-                .stream()
-                .map(tagDtoConverter::convertToEntity)
-                .collect(Collectors.toSet());
-        sourceCertificate.setTags(saveTags(tags));
-        GiftCertificate updatedCertificate = giftCertificateDao.update(sourceCertificate);
+        if (giftCertificateDto.getTags() != null) {
+            validateTags(giftCertificateDto.getTags());
+            Set<Tag> tags = giftCertificateDto.getTags()
+                    .stream()
+                    .map(tagDtoConverter::convertToEntity)
+                    .collect(Collectors.toSet());
+            sourceCertificate.setTags(saveTags(tags));
+        }
+        GiftCertificate updatedCertificate = certificateRepository.update(sourceCertificate);
         return giftCertificateDtoConverter.convertToDto(updatedCertificate);
     }
 
     @Override
     @Transactional
     public void deleteById(long id) {
-        Optional<GiftCertificate> certificateOptional = giftCertificateDao.findById(id);
+        Optional<GiftCertificate> certificateOptional = certificateRepository.findById(id);
         if (!certificateOptional.isPresent()) {
             throw new NoSuchEntityException("certificate.not.found");
         }
-        giftCertificateDao.deleteById(id);
+        certificateRepository.deleteById(id);
     }
 
     private boolean isFilterExist(String tagName, String partInfo) {
@@ -181,8 +186,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private Set<Tag> saveTags(Set<Tag> tags) {
         Set<Tag> savedTags = new HashSet<>();
         for (Tag tag : tags) {
-            Optional<Tag> optionalTag = tagDao.findByName(tag.getName());
-            Tag savedTag = optionalTag.orElseGet(() -> tagDao.create(tag));
+            Optional<Tag> optionalTag = tagRepository.findByName(tag.getName());
+            Tag savedTag = optionalTag.orElseGet(() -> tagRepository.create(tag));
             savedTags.add(savedTag);
         }
         return savedTags;

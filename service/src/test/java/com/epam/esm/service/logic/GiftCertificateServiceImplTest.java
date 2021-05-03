@@ -10,6 +10,7 @@ import com.epam.esm.service.dto.converter.GiftCertificateDtoConverter;
 import com.epam.esm.service.dto.converter.TagDtoConverter;
 import com.epam.esm.service.exception.InvalidEntityException;
 import com.epam.esm.service.exception.NoSuchEntityException;
+import com.epam.esm.service.logic.certificate.GiftCertificateServiceImpl;
 import com.epam.esm.service.validator.GiftCertificateValidator;
 import com.epam.esm.service.validator.SortParamsContextValidator;
 import com.epam.esm.service.validator.TagValidator;

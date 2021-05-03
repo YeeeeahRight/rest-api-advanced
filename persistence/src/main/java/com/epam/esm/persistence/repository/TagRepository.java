@@ -2,7 +2,6 @@ package com.epam.esm.persistence.repository;
 
 import com.epam.esm.persistence.entity.Tag;
 
-import java.util.List;
 import java.util.Optional;
 
 /**

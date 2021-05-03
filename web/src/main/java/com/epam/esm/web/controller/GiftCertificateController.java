@@ -1,7 +1,7 @@
 package com.epam.esm.web.controller;
 
 import com.epam.esm.service.dto.GiftCertificateDto;
-import com.epam.esm.service.logic.GiftCertificateService;
+import com.epam.esm.service.logic.certificate.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
