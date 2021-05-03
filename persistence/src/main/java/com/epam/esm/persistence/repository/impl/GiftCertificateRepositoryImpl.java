@@ -1,7 +1,7 @@
 package com.epam.esm.persistence.repository.impl;
 
 import com.epam.esm.persistence.entity.Tag;
-import com.epam.esm.persistence.repository.AbstractEntityRepository;
+import com.epam.esm.persistence.repository.AbstractRepository;
 import com.epam.esm.persistence.repository.GiftCertificateRepository;
 import com.epam.esm.persistence.entity.GiftCertificate;
 import com.epam.esm.persistence.query.SortParamsContext;
@@ -15,7 +15,7 @@ import java.util.*;
 
 @Repository
 @Transactional
-public class GiftCertificateRepositoryImpl extends AbstractEntityRepository<GiftCertificate>
+public class GiftCertificateRepositoryImpl extends AbstractRepository<GiftCertificate>
         implements GiftCertificateRepository {
 
     @Autowired

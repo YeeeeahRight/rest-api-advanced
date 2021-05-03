@@ -12,21 +12,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class TagServiceImpl implements TagService {
-    private final TagRepository tagDao;
+    private final TagRepository tagRepository;
     private final Validator<TagDto> tagValidator;
     private final TagDtoConverter tagDtoConverter;
 
     @Autowired
-    public TagServiceImpl(TagRepository tagDao, Validator<TagDto> tagValidator,
+    public TagServiceImpl(TagRepository tagRepository, Validator<TagDto> tagValidator,
                           TagDtoConverter tagDtoConverter) {
-        this.tagDao = tagDao;
+        this.tagRepository = tagRepository;
         this.tagValidator = tagValidator;
         this.tagDtoConverter = tagDtoConverter;
     }
@@ -37,18 +36,18 @@ public class TagServiceImpl implements TagService {
             throw new InvalidEntityException("tag.invalid");
         }
         String tagName = tagDto.getName();
-        boolean isTagExist = tagDao.findByName(tagName).isPresent();
+        boolean isTagExist = tagRepository.findByName(tagName).isPresent();
         if (isTagExist) {
             throw new DuplicateEntityException("tag.already.exist");
         }
         Tag tag = tagDtoConverter.convertToEntity(tagDto);
-        tag = tagDao.create(tag);
+        tag = tagRepository.create(tag);
         return tagDtoConverter.convertToDto(tag);
     }
 
     @Override
     public Set<TagDto> getAll() {
-        return tagDao.getAll()
+        return tagRepository.getAll()
                         .stream()
                         .map(tagDtoConverter::convertToDto)
                         .collect(Collectors.toSet());
@@ -57,7 +56,7 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional
     public TagDto getById(long id) {
-        Optional<Tag> optionalTag = tagDao.findById(id);
+        Optional<Tag> optionalTag = tagRepository.findById(id);
         if (!optionalTag.isPresent()) {
             throw new NoSuchEntityException("tag.not.found");
         }
@@ -67,10 +66,10 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional
     public void deleteById(long id) {
-        Optional<Tag> optionalTag = tagDao.findById(id);
+        Optional<Tag> optionalTag = tagRepository.findById(id);
         if (!optionalTag.isPresent()) {
             throw new NoSuchEntityException("tag.not.found");
         }
-        tagDao.deleteById(id);
+        tagRepository.deleteById(id);
     }
 }

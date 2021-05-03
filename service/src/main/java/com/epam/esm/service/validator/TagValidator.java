@@ -15,6 +15,7 @@ public class TagValidator implements Validator<TagDto> {
             return false;
         }
         int nameLength = name.length();
+
         return nameLength >= NAME_MIN_LENGTH && nameLength <= NAME_MAX_LENGTH;
     }
 }

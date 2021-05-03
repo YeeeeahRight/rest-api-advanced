@@ -12,14 +12,20 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
+
+/**
+ * CRUD abstract repository class
+ *
+ * @param <T> the type of entities
+ */
 @Transactional
-public abstract class AbstractEntityRepository<T> implements EntityRepository<T> {
+public abstract class AbstractRepository<T> implements EntityRepository<T> {
 
     @PersistenceContext
     protected final EntityManager entityManager;
     protected final CriteriaBuilder builder;
 
-    protected AbstractEntityRepository(EntityManager entityManager) {
+    protected AbstractRepository(EntityManager entityManager) {
         this.entityManager = entityManager;
         this.builder = entityManager.getCriteriaBuilder();
     }

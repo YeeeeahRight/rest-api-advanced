@@ -1,6 +1,5 @@
 package com.epam.esm.service.logic;
 
-import com.epam.esm.persistence.entity.Tag;
 import com.epam.esm.service.dto.TagDto;
 import com.epam.esm.service.exception.DuplicateEntityException;
 import com.epam.esm.service.exception.InvalidEntityException;

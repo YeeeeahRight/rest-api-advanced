@@ -1,6 +1,6 @@
 package com.epam.esm.persistence.repository.impl;
 
-import com.epam.esm.persistence.repository.AbstractEntityRepository;
+import com.epam.esm.persistence.repository.AbstractRepository;
 import com.epam.esm.persistence.repository.TagRepository;
 import com.epam.esm.persistence.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import java.util.*;
 
 @Repository
 @Transactional
-public class TagRepositoryImpl extends AbstractEntityRepository<Tag> implements TagRepository {
+public class TagRepositoryImpl extends AbstractRepository<Tag> implements TagRepository {
 
     @Autowired
     protected TagRepositoryImpl(EntityManager entityManager) {
