@@ -1,4 +1,4 @@
-package com.epam.esm.service.logic;
+package com.epam.esm.service.logic.user;
 
 import com.epam.esm.persistence.entity.User;
 import com.epam.esm.persistence.repository.UserRepository;
@@ -42,8 +42,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getAll() {
         List<User> users = userRepository.getAll();
-        return users
-                .stream()
+        return users.stream()
                 .map(userDtoConverter::convertToDto)
                 .collect(Collectors.toList());
     }

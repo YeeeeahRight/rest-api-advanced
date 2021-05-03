@@ -48,10 +48,10 @@ public class GiftCertificateRepositoryImpl extends AbstractRepository<GiftCertif
 
         Predicate[] predicates = new Predicate[2];
         if (tagName != null) {
-            predicates[0] = buildPredicateByTagName(root, builder, tagName);
+            predicates[0] = buildPredicateByTagName(root, tagName);
         }
         if (partInfo != null) {
-            predicates[1] = buildPredicateByPartInfo(root, builder, partInfo);
+            predicates[1] = buildPredicateByPartInfo(root, partInfo);
         }
         query.where(builder.and(predicates));
 
@@ -67,10 +67,10 @@ public class GiftCertificateRepositoryImpl extends AbstractRepository<GiftCertif
 
         Predicate[] predicates = new Predicate[2];
         if (tagName != null) {
-            predicates[0] = buildPredicateByTagName(root, builder, tagName);
+            predicates[0] = buildPredicateByTagName(root, tagName);
         }
         if (partInfo != null) {
-            predicates[1] = buildPredicateByPartInfo(root, builder, partInfo);
+            predicates[1] = buildPredicateByPartInfo(root, partInfo);
         }
         query.where(builder.and(predicates));
 
@@ -80,18 +80,16 @@ public class GiftCertificateRepositoryImpl extends AbstractRepository<GiftCertif
         return entityManager.createQuery(query).getResultList();
     }
 
-    private Predicate buildPredicateByTagName(Root<GiftCertificate> root, CriteriaBuilder criteriaBuilder,
-                                              String tagName) {
+    private Predicate buildPredicateByTagName(Root<GiftCertificate> root, String tagName) {
         Join<GiftCertificate, Tag> tagsJoin = root.join("tags");
-        return criteriaBuilder.equal(tagsJoin.get("name"), tagName);
+        return builder.equal(tagsJoin.get("name"), tagName);
     }
 
-    private Predicate buildPredicateByPartInfo(Root<GiftCertificate> root, CriteriaBuilder criteriaBuilder,
-                                         String partInfo) {
+    private Predicate buildPredicateByPartInfo(Root<GiftCertificate> root, String partInfo) {
         partInfo = "%" + partInfo + "%";
-        Predicate predicateByNameInfo = criteriaBuilder.like(root.get("name"), partInfo);
-        Predicate predicateByDescriptionInfo = criteriaBuilder.like(root.get("description"), partInfo);
-        return criteriaBuilder.or(predicateByNameInfo, predicateByDescriptionInfo);
+        Predicate predicateByNameInfo = builder.like(root.get("name"), partInfo);
+        Predicate predicateByDescriptionInfo = builder.like(root.get("description"), partInfo);
+        return builder.or(predicateByNameInfo, predicateByDescriptionInfo);
     }
 
     private List<Order> buildOrderList(CriteriaBuilder criteriaBuilder, Root<GiftCertificate> root,

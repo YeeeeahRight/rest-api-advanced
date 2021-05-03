@@ -21,7 +21,7 @@ public class GiftCertificate {
     @Column(nullable = false)
     private BigDecimal price;
 
-    @Column(name = "create_date", nullable = false)
+    @Column(name = "create_date", nullable = false, updatable = false)
     private ZonedDateTime createDate;
 
     @Column(name = "last_update_date", nullable = false)

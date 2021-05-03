@@ -1,6 +1,5 @@
-package com.epam.esm.service.logic;
+package com.epam.esm.service.logic.user;
 
-import com.epam.esm.service.dto.TagDto;
 import com.epam.esm.service.dto.UserDto;
 import com.epam.esm.service.exception.DuplicateEntityException;
 import com.epam.esm.service.exception.InvalidEntityException;
@@ -19,7 +18,6 @@ public interface UserService {
      * @param userDto User to create
      * @return created User
      * @throws InvalidEntityException when User data is invalid
-     * @throws DuplicateEntityException when User is already exist
      */
     UserDto create(UserDto userDto);
 

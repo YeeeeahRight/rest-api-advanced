@@ -1,4 +1,4 @@
-package com.epam.esm.service.logic;
+package com.epam.esm.service.logic.certificate;
 
 import com.epam.esm.service.dto.GiftCertificateDto;
 import com.epam.esm.service.exception.DuplicateEntityException;
@@ -18,7 +18,6 @@ public interface GiftCertificateService {
      * @param giftCertificateDto Certificate to create with optional tags
      * @return created Certificate
      * @throws InvalidEntityException when Certificate or Tag data is invalid
-     * @throws DuplicateEntityException when Certificate is already exist
      */
     GiftCertificateDto create(GiftCertificateDto giftCertificateDto);
 

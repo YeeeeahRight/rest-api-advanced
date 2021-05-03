@@ -14,8 +14,8 @@ public class Tag {
     @Column(length = 60, nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "tags")
-    private final List<GiftCertificate> certificates = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "tags")
+    private List<GiftCertificate> certificates = new ArrayList<>();
 
     public Tag() {
 
@@ -26,12 +26,12 @@ public class Tag {
         this.name = name;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public long getId() {
+        return id;
     }
 
-    public Long getId() {
-        return id;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -44,6 +44,10 @@ public class Tag {
 
     public List<GiftCertificate> getCertificates() {
         return certificates;
+    }
+
+    public void setCertificates(List<GiftCertificate> certificates) {
+        this.certificates = certificates;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.epam.esm.service.logic;
+package com.epam.esm.service.logic.certificate;
 
 import com.epam.esm.persistence.repository.GiftCertificateRepository;
 import com.epam.esm.persistence.repository.TagRepository;
@@ -107,8 +107,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         } else {
             giftCertificates = certificateRepository.getAll();
         }
-        return giftCertificates
-                .stream()
+        return giftCertificates.stream()
                 .map(giftCertificateDtoConverter::convertToDto)
                 .collect(Collectors.toList());
     }

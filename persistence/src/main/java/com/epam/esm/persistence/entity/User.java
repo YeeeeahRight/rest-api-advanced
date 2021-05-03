@@ -1,6 +1,8 @@
 package com.epam.esm.persistence.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -12,6 +14,9 @@ public class User {
 
     @Column(length = 60, nullable = false)
     private String name;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Order> orders = new ArrayList<>();
 
     public User() {
     }
@@ -35,6 +40,14 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 
     @Override
