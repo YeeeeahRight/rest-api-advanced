@@ -1,10 +1,12 @@
 package com.epam.esm.persistence.repository;
 
+import com.epam.esm.persistence.query.CriteriaQueryBuildHelper;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -24,10 +26,12 @@ public abstract class AbstractRepository<T> implements EntityRepository<T> {
     @PersistenceContext
     protected final EntityManager entityManager;
     protected final CriteriaBuilder builder;
+    protected final CriteriaQueryBuildHelper buildHelper;
 
     protected AbstractRepository(EntityManager entityManager) {
         this.entityManager = entityManager;
         this.builder = entityManager.getCriteriaBuilder();
+        this.buildHelper = new CriteriaQueryBuildHelper(this.builder);
     }
 
     protected abstract Class<T> getEntityType();
@@ -60,17 +64,13 @@ public abstract class AbstractRepository<T> implements EntityRepository<T> {
 
         Predicate fieldPredicate = builder.equal(entityRoot.get(fieldName), value);
         entityQuery.where(fieldPredicate);
-        try {
-            T entity = entityManager.createQuery(entityQuery).getSingleResult();
-            return Optional.of(entity);
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
+
+        TypedQuery<T> typedQuery = entityManager.createQuery(entityQuery);
+        return buildHelper.getOptionalQueryResult(typedQuery);
     }
 
     @Override
     public T update(T entity) {
-        System.out.println(entity);
         return entityManager.merge(entity);
     }
 
