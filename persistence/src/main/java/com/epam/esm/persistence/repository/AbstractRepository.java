@@ -1,10 +1,11 @@
 package com.epam.esm.persistence.repository;
 
 import com.epam.esm.persistence.query.CriteriaQueryBuildHelper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -43,12 +44,15 @@ public abstract class AbstractRepository<T> implements EntityRepository<T> {
     }
 
     @Override
-    public List<T> getAll() {
+    public List<T> getAll(Pageable pageable) {
         CriteriaQuery<T> query = builder.createQuery(getEntityType());
         Root<T> variableRoot = query.from(getEntityType());
         query.select(variableRoot);
 
-        return entityManager.createQuery(query).getResultList();
+        return entityManager.createQuery(query)
+                .setFirstResult((int)pageable.getOffset())
+                .setMaxResults(pageable.getPageSize())
+                .getResultList();
     }
 
     @Override

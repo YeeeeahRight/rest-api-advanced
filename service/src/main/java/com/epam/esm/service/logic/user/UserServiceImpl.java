@@ -5,9 +5,12 @@ import com.epam.esm.persistence.repository.UserRepository;
 import com.epam.esm.service.dto.UserDto;
 import com.epam.esm.service.dto.converter.UserDtoConverter;
 import com.epam.esm.service.exception.InvalidEntityException;
+import com.epam.esm.service.exception.InvalidParametersException;
 import com.epam.esm.service.exception.NoSuchEntityException;
 import com.epam.esm.service.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,8 +43,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAll() {
-        List<User> users = userRepository.getAll();
+    public List<UserDto> getAll(int page, int size) {
+        Pageable pageRequest;
+        try {
+            pageRequest = PageRequest.of(page, size);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidParametersException("pagination.invalid");
+        }
+
+        List<User> users = userRepository.getAll(pageRequest);
         return users.stream()
                 .map(userDtoConverter::convertToDto)
                 .collect(Collectors.toList());

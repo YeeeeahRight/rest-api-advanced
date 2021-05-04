@@ -5,6 +5,7 @@ import com.epam.esm.persistence.model.entity.User;
 import com.epam.esm.persistence.repository.AbstractRepository;
 import com.epam.esm.persistence.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -28,7 +29,7 @@ public class OrderRepositoryImpl extends AbstractRepository<Order> implements Or
     }
 
     @Override
-    public List<Order> getAllByUserId(long userId) {
+    public List<Order> getAllByUserId(long userId, Pageable pageable) {
         CriteriaQuery<Order> query = builder.createQuery(Order.class);
         Root<Order> root = query.from(Order.class);
         query.select(root);
@@ -37,6 +38,9 @@ public class OrderRepositoryImpl extends AbstractRepository<Order> implements Or
         Predicate joinIdPredicate = builder.equal(userJoin.get("id"), userId);
         query.where(joinIdPredicate);
 
-        return entityManager.createQuery(query).getResultList();
+        return entityManager.createQuery(query)
+                .setFirstResult((int)pageable.getOffset())
+                .setMaxResults(pageable.getPageSize())
+                .getResultList();
     }
 }

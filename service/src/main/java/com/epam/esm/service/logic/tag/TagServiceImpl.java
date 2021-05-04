@@ -7,14 +7,17 @@ import com.epam.esm.persistence.repository.UserRepository;
 import com.epam.esm.service.dto.TagDto;
 import com.epam.esm.service.dto.converter.TagDtoConverter;
 import com.epam.esm.service.exception.InvalidEntityException;
+import com.epam.esm.service.exception.InvalidParametersException;
 import com.epam.esm.service.exception.NoSuchEntityException;
 import com.epam.esm.service.exception.DuplicateEntityException;
 import com.epam.esm.service.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.NoResultException;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -53,9 +56,16 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Set<TagDto> getAll() {
-        return tagRepository.getAll()
-                .stream()
+    public Set<TagDto> getAll(int page, int size) {
+        Pageable pageRequest;
+        try {
+            pageRequest = PageRequest.of(page, size);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidParametersException("pagination.invalid");
+        }
+        List<Tag> tags = tagRepository.getAll(pageRequest);
+
+        return  tags.stream()
                 .map(tagDtoConverter::convertToDto)
                 .collect(Collectors.toSet());
     }

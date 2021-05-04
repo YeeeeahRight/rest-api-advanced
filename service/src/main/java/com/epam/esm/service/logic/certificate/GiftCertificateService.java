@@ -24,9 +24,12 @@ public interface GiftCertificateService {
     /**
      * Gets list of Certificates.
      *
+     * @param page page number of Certificates
+     * @param size page size
      * @return List of all existing Certificates
+     * @throws InvalidParametersException when page or size params are invalid
      */
-    List<GiftCertificateDto> getAll();
+    List<GiftCertificateDto> getAll(int page, int size);
 
     /**
      * Gets all Certificates with tags and optional filtering/sorting
@@ -35,12 +38,15 @@ public interface GiftCertificateService {
      * @param partInfo    part info of name/desc to filter Certificates
      * @param sortColumns columns to sort of Certificates
      * @param orderTypes  sort order types
+     * @param page page number of Certificates
+     * @param size page size
      * @return List of sorted/filtered Certificates with Tags
-     * @throws NoSuchEntityException when Tag is not found
+     * @throws NoSuchEntityException      when Tag is not found
      * @throws InvalidParametersException when sort parameters are invalid
      */
     List<GiftCertificateDto> getAllWithTagsWithFilteringSorting(List<String> tagNames, String partInfo,
-                                                                List<String> sortColumns, List<String> orderTypes);
+                                                                List<String> sortColumns, List<String> orderTypes,
+                                                                int page, int size);
 
     /**
      * Gets Certificate by id.
@@ -55,10 +61,10 @@ public interface GiftCertificateService {
      * Updates Certificate by id
      * with updating only fields that are passed
      *
-     * @param id              Certificate id to search
+     * @param id                 Certificate id to search
      * @param giftCertificateDto update information with Certificate fields or Tags
      * @return updated Certificate with Tags
-     * @throws NoSuchEntityException when Certificate is not found
+     * @throws NoSuchEntityException  when Certificate is not found
      * @throws InvalidEntityException when update info of Certificate fields is invalid
      */
     GiftCertificateDto updateById(long id, GiftCertificateDto giftCertificateDto);

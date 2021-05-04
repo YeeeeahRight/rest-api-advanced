@@ -1,6 +1,7 @@
 package com.epam.esm.service.logic.order;
 
 import com.epam.esm.service.dto.OrderDto;
+import com.epam.esm.service.exception.InvalidParametersException;
 import com.epam.esm.service.exception.NoSuchEntityException;
 
 import java.util.List;
@@ -13,9 +14,8 @@ public interface OrderService {
     /**
      * Creates new Order.
      *
-     * @param userId user id who creates Order
+     * @param userId        user id who creates Order
      * @param certificateId certificate to order
-     *
      * @return created Order
      * @throws NoSuchEntityException when User or Certificate not found
      */
@@ -25,18 +25,19 @@ public interface OrderService {
      * Gets all Orders by user id.
      *
      * @param userId User id who has orders
-     *
+     * @param page   page number of Orders
+     * @param size   page size
      * @return founded Orders
-     * @throws NoSuchEntityException when User not found
+     * @throws NoSuchEntityException      when User not found
+     * @throws InvalidParametersException when page or size params are invalid
      */
-    List<OrderDto> getAllByUserId(long userId);
+    List<OrderDto> getAllByUserId(long userId, int page, int size);
 
     /**
      * Gets Order by order and user id.
      *
-     * @param userId User id who has order
+     * @param userId  User id who has order
      * @param orderId Order id to search
-     *
      * @return founded Order
      * @throws NoSuchEntityException when User or Order not found
      */

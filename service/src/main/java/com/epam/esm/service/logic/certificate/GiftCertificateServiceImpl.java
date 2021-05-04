@@ -13,6 +13,8 @@ import com.epam.esm.persistence.model.SortParamsContext;
 import com.epam.esm.service.validator.Validator;
 import com.epam.esm.service.validator.GiftCertificateValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,8 +72,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificateDto> getAll() {
-        List<GiftCertificate> giftCertificates = certificateRepository.getAll();
+    public List<GiftCertificateDto> getAll(int page, int size) {
+        Pageable pageRequest;
+        try {
+            pageRequest = PageRequest.of(page, size);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidParametersException("pagination.invalid");
+        }
+
+        List<GiftCertificate> giftCertificates = certificateRepository.getAll(pageRequest);
 
         return giftCertificates
                 .stream()
@@ -92,14 +101,21 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public List<GiftCertificateDto> getAllWithTagsWithFilteringSorting(List<String> tagNames, String partInfo,
-                                                                       List<String> sortColumns, List<String> orderTypes) {
+                                                                       List<String> sortColumns, List<String> orderTypes,
+                                                                       int page, int size) {
+        Pageable pageRequest;
+        try {
+            pageRequest = PageRequest.of(page, size);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidParametersException("pagination.invalid");
+        }
         List<GiftCertificate> giftCertificates;
         SortParamsContext sortParameters = null;
         if (sortColumns != null) {
             sortParameters = new SortParamsContext(sortColumns, orderTypes);
             validateSortParams(sortParameters);
         }
-        giftCertificates = certificateRepository.getAllWithSortingFiltering(sortParameters, tagNames, partInfo);
+        giftCertificates = certificateRepository.getAllWithSortingFiltering(sortParameters, tagNames, partInfo, pageRequest);
 
         return giftCertificates.stream()
                 .map(giftCertificateDtoConverter::convertToDto)

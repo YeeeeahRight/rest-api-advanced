@@ -31,6 +31,9 @@ public class TagServiceImplTest {
     private static final Tag TAG = new Tag(ID,NAME);
     private static final TagDto TAG_DTO = new TagDto(ID, NAME);
 
+    private static final int DEFAULT_PAGE = 0;
+    private static final int DEFAULT_PAGE_SIZE = 50;
+
     @MockBean
     private TagRepositoryImpl tagDao;
     @MockBean
@@ -73,8 +76,8 @@ public class TagServiceImplTest {
 
     @Test
     public void testGetAllShouldGetAll() {
-        tagService.getAll();
-        verify(tagDao).getAll();
+        tagService.getAll(DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
+        verify(tagDao).getAll(any());
     }
 
     @Test

@@ -6,6 +6,7 @@ import com.epam.esm.persistence.repository.GiftCertificateRepository;
 import com.epam.esm.persistence.model.entity.GiftCertificate;
 import com.epam.esm.persistence.model.SortParamsContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +31,8 @@ public class GiftCertificateRepositoryImpl extends AbstractRepository<GiftCertif
 
     @Override
     public List<GiftCertificate> getAllWithSortingFiltering(SortParamsContext sortParameters,
-                                                            List<String> tagNames, String partInfo) {
+                                                            List<String> tagNames, String partInfo,
+                                                            Pageable pageable) {
         CriteriaQuery<GiftCertificate> query = builder.createQuery(GiftCertificate.class);
         Root<GiftCertificate> root = query.from(GiftCertificate.class);
         query.select(root);
@@ -57,7 +59,10 @@ public class GiftCertificateRepositoryImpl extends AbstractRepository<GiftCertif
             }
         }
 
-        return entityManager.createQuery(query).getResultList();
+        return entityManager.createQuery(query)
+                .setFirstResult((int)pageable.getOffset())
+                .setMaxResults(pageable.getPageSize())
+                .getResultList();
     }
 
     private Predicate buildPredicateByTagName(Root<GiftCertificate> root, List<String> tagNames) {

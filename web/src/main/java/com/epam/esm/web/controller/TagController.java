@@ -26,8 +26,9 @@ public class TagController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Set<TagDto> getAll() {
-        return tagService.getAll();
+    public Set<TagDto> getAll(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                              @RequestParam(value = "size", defaultValue = "25", required = false) int size) {
+        return tagService.getAll(page, size);
     }
 
     @GetMapping(value = "/{id}")

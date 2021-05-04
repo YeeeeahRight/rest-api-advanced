@@ -50,6 +50,9 @@ public class GiftCertificateServiceImplTest {
     private static final List<String> SORTING_COLUMN = Collections.singletonList("name");
     private static final SortParamsContext SORT_PARAMS = new SortParamsContext(SORTING_COLUMN, null);
 
+    private static final int DEFAULT_PAGE = 0;
+    private static final int DEFAULT_PAGE_SIZE = 50;
+
     @MockBean
     private GiftCertificateRepositoryImpl certificateDao;
     @MockBean
@@ -90,8 +93,8 @@ public class GiftCertificateServiceImplTest {
 
     @Test
     public void testGetAllShouldGetAll() {
-        giftCertificateService.getAll();
-        verify(certificateDao).getAll();
+        giftCertificateService.getAll(DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
+        verify(certificateDao).getAll(any());
     }
 
     @Test
@@ -109,30 +112,32 @@ public class GiftCertificateServiceImplTest {
 
     @Test
     public void getAllWithTagsShouldGetAllWhenFilteringAndSortingNotExist() {
-        giftCertificateService.getAllWithTagsWithFilteringSorting(null, null, null, null);
-        verify(certificateDao).getAllWithSortingFiltering(any(), any(), any());
+        giftCertificateService.getAllWithTagsWithFilteringSorting(null, null, null,
+                null, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
+        verify(certificateDao).getAllWithSortingFiltering(any(), any(), any(), any());
     }
 
     @Test
     public void getAllWithTagsShouldGetWithFilteringWhenFilteringExist() {
-        giftCertificateService.getAllWithTagsWithFilteringSorting(null, PART_INFO, null, null);
-        verify(certificateDao).getAllWithSortingFiltering(any(), any(), eq(PART_INFO));
+        giftCertificateService.getAllWithTagsWithFilteringSorting(null, PART_INFO, null,
+                null, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
+        verify(certificateDao).getAllWithSortingFiltering(any(), any(), eq(PART_INFO), any());
     }
 
     @Test
     public void getAllWithTagsShouldGetWithSortingWhenSoringExist() {
         when(sortParamsContextValidator.isValid(any())).thenReturn(true);
         giftCertificateService.getAllWithTagsWithFilteringSorting(null, null,
-                Collections.singletonList("name"), null);
-        verify(certificateDao).getAllWithSortingFiltering(any(), any(), any());
+                Collections.singletonList("name"), null, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
+        verify(certificateDao).getAllWithSortingFiltering(any(), any(), any(), any());
     }
 
     @Test
     public void getAllWithTagsShouldGetWithSoringAndFilteringWhenSoringAndFilteringExist() {
         when(sortParamsContextValidator.isValid(any())).thenReturn(true);
         giftCertificateService.getAllWithTagsWithFilteringSorting(null, "p",
-                SORTING_COLUMN, null);
-        verify(certificateDao).getAllWithSortingFiltering(eq(SORT_PARAMS), any(), anyString());
+                SORTING_COLUMN, null, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
+        verify(certificateDao).getAllWithSortingFiltering(eq(SORT_PARAMS), any(), anyString(), any());
     }
 
 

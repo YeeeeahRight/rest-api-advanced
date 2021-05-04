@@ -8,8 +8,11 @@ import com.epam.esm.persistence.repository.OrderRepository;
 import com.epam.esm.persistence.repository.UserRepository;
 import com.epam.esm.service.dto.OrderDto;
 import com.epam.esm.service.dto.converter.OrderDtoConverter;
+import com.epam.esm.service.exception.InvalidParametersException;
 import com.epam.esm.service.exception.NoSuchEntityException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,12 +59,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDto> getAllByUserId(long userId) {
+    public List<OrderDto> getAllByUserId(long userId, int page, int size) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (!optionalUser.isPresent()) {
             throw new NoSuchEntityException("user.not.found");
         }
-        List<Order> orders = orderRepository.getAllByUserId(userId);
+        Pageable pageRequest;
+        try {
+            pageRequest = PageRequest.of(page, size);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidParametersException("pagination.invalid");
+        }
+
+        List<Order> orders = orderRepository.getAllByUserId(userId, pageRequest);
 
         return orders.stream()
                 .map(orderDtoConverter::convertToDto)

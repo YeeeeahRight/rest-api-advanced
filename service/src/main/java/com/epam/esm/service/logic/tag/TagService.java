@@ -4,6 +4,7 @@ import com.epam.esm.persistence.model.BestUserTag;
 import com.epam.esm.service.dto.TagDto;
 import com.epam.esm.service.exception.DuplicateEntityException;
 import com.epam.esm.service.exception.InvalidEntityException;
+import com.epam.esm.service.exception.InvalidParametersException;
 import com.epam.esm.service.exception.NoSuchEntityException;
 
 import java.util.Set;
@@ -17,7 +18,7 @@ public interface TagService {
      *
      * @param tagDto Tag to create
      * @return created Tag
-     * @throws InvalidEntityException when Tag data is invalid
+     * @throws InvalidEntityException   when Tag data is invalid
      * @throws DuplicateEntityException when Tag is already exist
      */
     TagDto create(TagDto tagDto);
@@ -25,9 +26,12 @@ public interface TagService {
     /**
      * Gets all Tags.
      *
+     * @param page page number of Tags
+     * @param size page size
      * @return Set of all Tags
+     * @throws InvalidParametersException when page or size params are invalid
      */
-    Set<TagDto> getAll();
+    Set<TagDto> getAll(int page, int size);
 
     /**
      * Gets Tag by id.

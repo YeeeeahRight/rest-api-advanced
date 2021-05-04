@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +45,8 @@ public class GiftCertificateRepositoryImplTest {
             LocalDateTime.parse("2020-03-03T03:33:33").atZone(ZoneId.of("Europe/Moscow")),
             LocalDateTime.parse("2021-03-03T03:44:33").atZone(ZoneId.of("Europe/Moscow")), 3);
 
+    private static final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 25);
+
     static {
         FIRST_CERTIFICATE.setTags(new HashSet<>(Arrays.asList(FIRST_TAG, THIRD_TAG)));
         SECOND_CERTIFICATE.setTags(new HashSet<>(Collections.singletonList(SECOND_TAG)));
@@ -74,7 +78,7 @@ public class GiftCertificateRepositoryImplTest {
     public void testGetAllShouldGet() {
         //given
         //when
-        List<GiftCertificate> giftCertificates = certificateRepository.getAll();
+        List<GiftCertificate> giftCertificates = certificateRepository.getAll(DEFAULT_PAGEABLE);
         //then
         Assert.assertEquals(Arrays.asList(FIRST_CERTIFICATE, SECOND_CERTIFICATE, THIRD_CERTIFICATE),
                 giftCertificates);
@@ -87,7 +91,7 @@ public class GiftCertificateRepositoryImplTest {
                 Collections.singletonList("id"), Collections.singletonList("DESC"));
         //when
         List<GiftCertificate> giftCertificates = certificateRepository.getAllWithSortingFiltering(
-                sortParamsContext, null, null);
+                sortParamsContext, null, null, DEFAULT_PAGEABLE);
         //then
         Assert.assertEquals(Arrays.asList(THIRD_CERTIFICATE, SECOND_CERTIFICATE, FIRST_CERTIFICATE),
                 giftCertificates);
@@ -98,7 +102,7 @@ public class GiftCertificateRepositoryImplTest {
         //given
         //when
         List<GiftCertificate> giftCertificates = certificateRepository.getAllWithSortingFiltering(null,
-                Collections.singletonList(THIRD_TAG.getName()), "certif");
+                Collections.singletonList(THIRD_TAG.getName()), "certif", DEFAULT_PAGEABLE);
         //then
         Assert.assertEquals(Arrays.asList(FIRST_CERTIFICATE, THIRD_CERTIFICATE), giftCertificates);
     }
@@ -110,7 +114,8 @@ public class GiftCertificateRepositoryImplTest {
                 Collections.singletonList("id"), Collections.singletonList("DESC"));
         //when
         List<GiftCertificate> giftCertificates = certificateRepository.getAllWithSortingFiltering(
-                sortParamsContext, Collections.singletonList(THIRD_TAG.getName()), "certif");
+                sortParamsContext, Collections.singletonList(THIRD_TAG.getName()), "certif",
+                DEFAULT_PAGEABLE);
         //then
         Assert.assertEquals(Arrays.asList(THIRD_CERTIFICATE, FIRST_CERTIFICATE), giftCertificates);
     }
