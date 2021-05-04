@@ -2,6 +2,7 @@ package com.epam.esm.service.logic;
 
 import static org.mockito.Mockito.*;
 
+import com.epam.esm.persistence.repository.UserRepository;
 import com.epam.esm.persistence.repository.impl.TagRepositoryImpl;
 import com.epam.esm.persistence.model.entity.Tag;
 import com.epam.esm.service.dto.TagDto;
@@ -36,6 +37,8 @@ public class TagServiceImplTest {
     private TagValidator tagValidator;
     @MockBean
     private TagDtoConverter tagDtoConverter;
+    @MockBean
+    private UserRepository userRepository;
 
     @Autowired
     private TagServiceImpl tagService;

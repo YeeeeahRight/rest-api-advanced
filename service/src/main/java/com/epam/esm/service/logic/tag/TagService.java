@@ -51,6 +51,7 @@ public interface TagService {
      *
      * @param userId User id to search
      * @return MostWidelyUsedTag founded Tag
+     * @throws NoSuchEntityException when User is not found or user has no tags
      */
     BestUserTag getUserMostWidelyUsedTagWithHighestOrderCost(long userId);
 }
