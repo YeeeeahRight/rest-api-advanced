@@ -1,5 +1,6 @@
 package com.epam.esm.service.logic.tag;
 
+import com.epam.esm.persistence.model.BestUserTag;
 import com.epam.esm.service.dto.TagDto;
 import com.epam.esm.service.exception.DuplicateEntityException;
 import com.epam.esm.service.exception.InvalidEntityException;
@@ -44,4 +45,12 @@ public interface TagService {
      * @throws NoSuchEntityException when Tag is not found
      */
     void deleteById(long id);
+
+    /**
+     * Gets User most widely used Tag with highest Order cost
+     *
+     * @param userId User id to search
+     * @return MostWidelyUsedTag founded Tag
+     */
+    BestUserTag getUserMostWidelyUsedTagWithHighestOrderCost(long userId);
 }

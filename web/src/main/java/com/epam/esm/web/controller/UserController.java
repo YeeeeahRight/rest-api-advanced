@@ -1,8 +1,10 @@
 package com.epam.esm.web.controller;
 
+import com.epam.esm.persistence.model.BestUserTag;
 import com.epam.esm.service.dto.OrderDto;
 import com.epam.esm.service.dto.UserDto;
 import com.epam.esm.service.logic.order.OrderService;
+import com.epam.esm.service.logic.tag.TagService;
 import com.epam.esm.service.logic.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,12 +18,15 @@ public class UserController {
 
     private final UserService userService;
     private final OrderService orderService;
+    private final TagService tagService;
 
     @Autowired
     public UserController(UserService userService,
-                          OrderService orderService) {
+                          OrderService orderService,
+                          TagService tagService) {
         this.userService = userService;
         this.orderService = orderService;
+        this.tagService = tagService;
     }
 
     @PostMapping
@@ -49,11 +54,19 @@ public class UserController {
         return orderService.getByUserId(id, orderId);
     }
 
+    @GetMapping("{id}/best_tag")
+    @ResponseStatus(HttpStatus.OK)
+    public BestUserTag getBestTag(@PathVariable long id) {
+        return tagService.getUserMostWidelyUsedTagWithHighestOrderCost(id);
+    }
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<UserDto> getAll() {
         return userService.getAll();
     }
+
+
 
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)

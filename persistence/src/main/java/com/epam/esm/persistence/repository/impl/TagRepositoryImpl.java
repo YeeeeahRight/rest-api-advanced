@@ -1,13 +1,15 @@
 package com.epam.esm.persistence.repository.impl;
 
+import com.epam.esm.persistence.model.BestUserTag;
+import com.epam.esm.persistence.query.NativeQuery;
 import com.epam.esm.persistence.repository.AbstractRepository;
 import com.epam.esm.persistence.repository.TagRepository;
-import com.epam.esm.persistence.entity.Tag;
+import com.epam.esm.persistence.model.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
+import javax.persistence.*;
 import java.util.*;
 
 @Repository
@@ -27,5 +29,18 @@ public class TagRepositoryImpl extends AbstractRepository<Tag> implements TagRep
     @Override
     public Optional<Tag> findByName(String name) {
         return findByField("name", name);
+    }
+
+    @Override
+    public Optional<BestUserTag> findUserMostWidelyUsedTagWithHighestOrderCost(long userId) {
+        Query query = entityManager.createNativeQuery(
+                NativeQuery.MOST_WIDELY_USED_WITH_HIGHEST_ORDER_COST_TAG_QUERY,
+                "BestTagMapping");
+        query.setParameter("userId", userId);
+        try {
+            return Optional.of((BestUserTag) query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 }

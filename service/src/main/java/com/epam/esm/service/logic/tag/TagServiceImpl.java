@@ -1,7 +1,9 @@
 package com.epam.esm.service.logic.tag;
 
+import com.epam.esm.persistence.model.BestUserTag;
 import com.epam.esm.persistence.repository.TagRepository;
-import com.epam.esm.persistence.entity.Tag;
+import com.epam.esm.persistence.model.entity.Tag;
+import com.epam.esm.persistence.repository.UserRepository;
 import com.epam.esm.service.dto.TagDto;
 import com.epam.esm.service.dto.converter.TagDtoConverter;
 import com.epam.esm.service.exception.InvalidEntityException;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,13 +22,17 @@ import java.util.stream.Collectors;
 @Service
 public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
+    private final UserRepository userRepository;
     private final Validator<TagDto> tagValidator;
     private final TagDtoConverter tagDtoConverter;
 
     @Autowired
-    public TagServiceImpl(TagRepository tagRepository, Validator<TagDto> tagValidator,
+    public TagServiceImpl(TagRepository tagRepository,
+                          UserRepository userRepository,
+                          Validator<TagDto> tagValidator,
                           TagDtoConverter tagDtoConverter) {
         this.tagRepository = tagRepository;
+        this.userRepository = userRepository;
         this.tagValidator = tagValidator;
         this.tagDtoConverter = tagDtoConverter;
     }
@@ -48,9 +55,9 @@ public class TagServiceImpl implements TagService {
     @Override
     public Set<TagDto> getAll() {
         return tagRepository.getAll()
-                        .stream()
-                        .map(tagDtoConverter::convertToDto)
-                        .collect(Collectors.toSet());
+                .stream()
+                .map(tagDtoConverter::convertToDto)
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -61,6 +68,19 @@ public class TagServiceImpl implements TagService {
             throw new NoSuchEntityException("tag.not.found");
         }
         return tagDtoConverter.convertToDto(optionalTag.get());
+    }
+
+    @Override
+    public BestUserTag getUserMostWidelyUsedTagWithHighestOrderCost(long userId) {
+        if (!userRepository.findById(userId).isPresent()) {
+            throw new NoSuchEntityException("user.not.found");
+        }
+        Optional<BestUserTag> bestUserTagOptional = tagRepository
+                .findUserMostWidelyUsedTagWithHighestOrderCost(userId);
+        if (!bestUserTagOptional.isPresent()) {
+            throw new NoSuchEntityException("user.no.tags");
+        }
+        return bestUserTagOptional.get();
     }
 
     @Override
