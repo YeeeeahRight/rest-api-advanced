@@ -57,6 +57,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> getAllByUserId(long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (!optionalUser.isPresent()) {
+            throw new NoSuchEntityException("user.not.found");
+        }
         List<Order> orders = orderRepository.getAllByUserId(userId);
 
         return orders.stream()
@@ -70,11 +74,16 @@ public class OrderServiceImpl implements OrderService {
         if (!orderOptional.isPresent()) {
             throw new NoSuchEntityException("order.not.found");
         }
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (!optionalUser.isPresent()) {
+            throw new NoSuchEntityException("user.not.found");
+        }
         Order order = orderOptional.get();
-        if (order.getUser().getId() != userId) {
+        User user = optionalUser.get();
+        List<Order> orders = user.getOrders();
+        if (orders == null || orders.isEmpty() || !orders.contains(order)) {
             throw new NoSuchEntityException("order.not.found");
         }
-
         return orderDtoConverter.convertToDto(order);
     }
 }
