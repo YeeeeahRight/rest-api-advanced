@@ -9,7 +9,7 @@ import com.epam.esm.service.dto.TagDto;
 import com.epam.esm.service.dto.converter.GiftCertificateDtoConverter;
 import com.epam.esm.service.dto.converter.TagDtoConverter;
 import com.epam.esm.service.exception.*;
-import com.epam.esm.persistence.query.SortParamsContext;
+import com.epam.esm.persistence.model.SortParamsContext;
 import com.epam.esm.service.validator.Validator;
 import com.epam.esm.service.validator.GiftCertificateValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,24 +91,16 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificateDto> getAllWithTags(String tagName, String partInfo,
-                                                   List<String> sortColumns, List<String> orderTypes) {
+    public List<GiftCertificateDto> getAllWithTagsWithFilteringSorting(List<String> tagNames, String partInfo,
+                                                                       List<String> sortColumns, List<String> orderTypes) {
         List<GiftCertificate> giftCertificates;
-        boolean isSortExist = sortColumns != null;
-        if (isSortExist) {
-            SortParamsContext sortParameters = new SortParamsContext(sortColumns, orderTypes);
+        SortParamsContext sortParameters = null;
+        if (sortColumns != null) {
+            sortParameters = new SortParamsContext(sortColumns, orderTypes);
             validateSortParams(sortParameters);
-            if (isFilterExist(tagName, partInfo)) {
-                giftCertificates = certificateRepository.getAllWithSortingFiltering(
-                        sortParameters, tagName, partInfo);
-            } else {
-                giftCertificates = certificateRepository.getAllWithSorting(sortParameters);
-            }
-        } else if (isFilterExist(tagName, partInfo)) {
-            giftCertificates = certificateRepository.getAllWithFiltering(tagName, partInfo);
-        } else {
-            giftCertificates = certificateRepository.getAll();
         }
+        giftCertificates = certificateRepository.getAllWithSortingFiltering(sortParameters, tagNames, partInfo);
+
         return giftCertificates.stream()
                 .map(giftCertificateDtoConverter::convertToDto)
                 .collect(Collectors.toList());
@@ -145,8 +137,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         certificateRepository.deleteById(id);
     }
 
-    private boolean isFilterExist(String tagName, String partInfo) {
-        return tagName != null || partInfo != null;
+    private boolean isFilterExist(List<String> tagNames, String partInfo) {
+        return tagNames != null || partInfo != null;
     }
 
     private void setUpdatedFields(GiftCertificate sourceCertificate,

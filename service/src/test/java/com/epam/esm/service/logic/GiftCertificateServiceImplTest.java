@@ -2,6 +2,7 @@ package com.epam.esm.service.logic;
 
 import static org.mockito.Mockito.*;
 
+import com.epam.esm.persistence.model.SortParamsContext;
 import com.epam.esm.persistence.repository.impl.GiftCertificateRepositoryImpl;
 import com.epam.esm.persistence.repository.impl.TagRepositoryImpl;
 import com.epam.esm.persistence.model.entity.GiftCertificate;
@@ -25,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @RunWith(SpringRunner.class)
@@ -43,6 +45,10 @@ public class GiftCertificateServiceImplTest {
     private static final GiftCertificateDto GIFT_CERTIFICATE_DTO = new GiftCertificateDto(
             ID, NAME, DESCRIPTION,PRICE, CREATE_TIME, UPDATE_TIME, DURATION
     );
+
+    private static final String PART_INFO = "z";
+    private static final List<String> SORTING_COLUMN = Collections.singletonList("name");
+    private static final SortParamsContext SORT_PARAMS = new SortParamsContext(SORTING_COLUMN, null);
 
     @MockBean
     private GiftCertificateRepositoryImpl certificateDao;
@@ -103,30 +109,30 @@ public class GiftCertificateServiceImplTest {
 
     @Test
     public void getAllWithTagsShouldGetAllWhenFilteringAndSortingNotExist() {
-        giftCertificateService.getAllWithTags(null, null, null, null);
-        verify(certificateDao).getAll();
+        giftCertificateService.getAllWithTagsWithFilteringSorting(null, null, null, null);
+        verify(certificateDao).getAllWithSortingFiltering(any(), any(), any());
     }
 
     @Test
     public void getAllWithTagsShouldGetWithFilteringWhenFilteringExist() {
-        giftCertificateService.getAllWithTags(null, "z", null, null);
-        verify(certificateDao).getAllWithFiltering(any(), anyString());
+        giftCertificateService.getAllWithTagsWithFilteringSorting(null, PART_INFO, null, null);
+        verify(certificateDao).getAllWithSortingFiltering(any(), any(), eq(PART_INFO));
     }
 
     @Test
-    public void getAllWithTagsShouldGetWithSoringWhenSoringExist() {
+    public void getAllWithTagsShouldGetWithSortingWhenSoringExist() {
         when(sortParamsContextValidator.isValid(any())).thenReturn(true);
-        giftCertificateService.getAllWithTags(null, null,
+        giftCertificateService.getAllWithTagsWithFilteringSorting(null, null,
                 Collections.singletonList("name"), null);
-        verify(certificateDao).getAllWithSorting(any());
+        verify(certificateDao).getAllWithSortingFiltering(any(), any(), any());
     }
 
     @Test
     public void getAllWithTagsShouldGetWithSoringAndFilteringWhenSoringAndFilteringExist() {
         when(sortParamsContextValidator.isValid(any())).thenReturn(true);
-        giftCertificateService.getAllWithTags(null, "p",
-                Collections.singletonList("name"), null);
-        verify(certificateDao).getAllWithSortingFiltering(any(), any(), anyString());
+        giftCertificateService.getAllWithTagsWithFilteringSorting(null, "p",
+                SORTING_COLUMN, null);
+        verify(certificateDao).getAllWithSortingFiltering(eq(SORT_PARAMS), any(), anyString());
     }
 
 

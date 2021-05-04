@@ -29,9 +29,9 @@ public interface GiftCertificateService {
     List<GiftCertificateDto> getAll();
 
     /**
-     * Gets all Certificates with Tags and optional sorting/filtering
+     * Gets all Certificates with tags and optional filtering/sorting
      *
-     * @param tagName     Tag name to filter Certificates
+     * @param tagNames    Tag names to filter Certificates
      * @param partInfo    part info of name/desc to filter Certificates
      * @param sortColumns columns to sort of Certificates
      * @param orderTypes  sort order types
@@ -39,8 +39,8 @@ public interface GiftCertificateService {
      * @throws NoSuchEntityException when Tag is not found
      * @throws InvalidParametersException when sort parameters are invalid
      */
-    List<GiftCertificateDto> getAllWithTags(String tagName, String partInfo,
-                                            List<String> sortColumns, List<String> orderTypes);
+    List<GiftCertificateDto> getAllWithTagsWithFilteringSorting(List<String> tagNames, String partInfo,
+                                                                List<String> sortColumns, List<String> orderTypes);
 
     /**
      * Gets Certificate by id.

@@ -33,11 +33,11 @@ public class GiftCertificateController {
     @GetMapping("/with_tags")
     @ResponseStatus(HttpStatus.OK)
     public List<GiftCertificateDto> getAllWithTags(
-            @RequestParam(name = "tag_name", required = false) String tagName,
+            @RequestParam(name = "tag_name", required = false) List<String> tagNames,
             @RequestParam(name = "part_info", required = false) String partInfo,
             @RequestParam(name = "sort", required = false) List<String> sortColumns,
             @RequestParam(name = "order", required = false) List<String> orderTypes) {
-        return giftCertificateService.getAllWithTags(tagName, partInfo, sortColumns, orderTypes);
+        return giftCertificateService.getAllWithTagsWithFilteringSorting(tagNames, partInfo, sortColumns, orderTypes);
     }
 
     @GetMapping("/{id}")

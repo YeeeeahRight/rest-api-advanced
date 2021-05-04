@@ -3,7 +3,7 @@ package com.epam.esm.persistence.repository;
 import com.epam.esm.persistence.config.TestJpaConfig;
 import com.epam.esm.persistence.model.entity.GiftCertificate;
 import com.epam.esm.persistence.model.entity.Tag;
-import com.epam.esm.persistence.query.SortParamsContext;
+import com.epam.esm.persistence.model.SortParamsContext;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -81,23 +81,24 @@ public class GiftCertificateRepositoryImplTest {
     }
 
     @Test
-    public void testGetAllWithSortingShouldGet() {
+    public void testGetAllWithSortingFilteringShouldGetSortedCertificates() {
         //given
         SortParamsContext sortParamsContext = new SortParamsContext(
                 Collections.singletonList("id"), Collections.singletonList("DESC"));
         //when
-        List<GiftCertificate> giftCertificates = certificateRepository.getAllWithSorting(sortParamsContext);
+        List<GiftCertificate> giftCertificates = certificateRepository.getAllWithSortingFiltering(
+                sortParamsContext, null, null);
         //then
         Assert.assertEquals(Arrays.asList(THIRD_CERTIFICATE, SECOND_CERTIFICATE, FIRST_CERTIFICATE),
                 giftCertificates);
     }
 
     @Test
-    public void testGetAllWithFilteringShouldGet() {
+    public void testGetAllWithFilteringShouldGetFilteredCertificates() {
         //given
         //when
-        List<GiftCertificate> giftCertificates = certificateRepository.getAllWithFiltering(
-                THIRD_TAG.getName(), "certif");
+        List<GiftCertificate> giftCertificates = certificateRepository.getAllWithSortingFiltering(null,
+                Collections.singletonList(THIRD_TAG.getName()), "certif");
         //then
         Assert.assertEquals(Arrays.asList(FIRST_CERTIFICATE, THIRD_CERTIFICATE), giftCertificates);
     }
@@ -109,7 +110,7 @@ public class GiftCertificateRepositoryImplTest {
                 Collections.singletonList("id"), Collections.singletonList("DESC"));
         //when
         List<GiftCertificate> giftCertificates = certificateRepository.getAllWithSortingFiltering(
-                sortParamsContext, THIRD_TAG.getName(), "certif");
+                sortParamsContext, Collections.singletonList(THIRD_TAG.getName()), "certif");
         //then
         Assert.assertEquals(Arrays.asList(THIRD_CERTIFICATE, FIRST_CERTIFICATE), giftCertificates);
     }
