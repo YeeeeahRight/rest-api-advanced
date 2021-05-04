@@ -1,9 +1,9 @@
 package com.epam.esm.persistence.repository.impl;
 
-import com.epam.esm.persistence.entity.Tag;
+import com.epam.esm.persistence.model.entity.Tag;
 import com.epam.esm.persistence.repository.AbstractRepository;
 import com.epam.esm.persistence.repository.GiftCertificateRepository;
-import com.epam.esm.persistence.entity.GiftCertificate;
+import com.epam.esm.persistence.model.entity.GiftCertificate;
 import com.epam.esm.persistence.query.SortParamsContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

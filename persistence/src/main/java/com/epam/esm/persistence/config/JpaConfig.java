@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ComponentScan("com.epam.esm.persistence")
-@EntityScan("com.epam.esm.persistence.entity")
+@EntityScan("com.epam.esm.persistence.model.entity")
 public class JpaConfig {
 }

@@ -1,7 +1,7 @@
 package com.epam.esm.persistence.repository.impl;
 
-import com.epam.esm.persistence.entity.Order;
-import com.epam.esm.persistence.entity.User;
+import com.epam.esm.persistence.model.entity.Order;
+import com.epam.esm.persistence.model.entity.User;
 import com.epam.esm.persistence.repository.AbstractRepository;
 import com.epam.esm.persistence.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;

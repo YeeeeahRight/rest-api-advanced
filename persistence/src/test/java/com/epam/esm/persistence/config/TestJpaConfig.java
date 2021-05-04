@@ -46,7 +46,7 @@ public class TestJpaConfig {
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(embeddedDatabase());
-        sessionFactory.setPackagesToScan("com.epam.esm.persistence.entity");
+        sessionFactory.setPackagesToScan("com.epam.esm.persistence.model.entity");
         sessionFactory.setHibernateProperties(hibernateProperties());
         return sessionFactory;
     }

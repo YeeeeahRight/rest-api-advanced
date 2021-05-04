@@ -1,6 +1,6 @@
 package com.epam.esm.persistence.repository;
 
-import com.epam.esm.persistence.entity.User;
+import com.epam.esm.persistence.model.entity.User;
 
 /**
  * Repository interface for User

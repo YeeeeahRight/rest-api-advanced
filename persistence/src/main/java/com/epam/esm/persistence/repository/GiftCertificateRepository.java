@@ -1,6 +1,6 @@
 package com.epam.esm.persistence.repository;
 
-import com.epam.esm.persistence.entity.GiftCertificate;
+import com.epam.esm.persistence.model.entity.GiftCertificate;
 import com.epam.esm.persistence.query.SortParamsContext;
 
 import java.util.List;

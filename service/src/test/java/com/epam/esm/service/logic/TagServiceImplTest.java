@@ -3,7 +3,7 @@ package com.epam.esm.service.logic;
 import static org.mockito.Mockito.*;
 
 import com.epam.esm.persistence.repository.impl.TagRepositoryImpl;
-import com.epam.esm.persistence.entity.Tag;
+import com.epam.esm.persistence.model.entity.Tag;
 import com.epam.esm.service.dto.TagDto;
 import com.epam.esm.service.dto.converter.TagDtoConverter;
 import com.epam.esm.service.exception.DuplicateEntityException;

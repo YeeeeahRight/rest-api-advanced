@@ -4,7 +4,7 @@ import static org.mockito.Mockito.*;
 
 import com.epam.esm.persistence.repository.impl.GiftCertificateRepositoryImpl;
 import com.epam.esm.persistence.repository.impl.TagRepositoryImpl;
-import com.epam.esm.persistence.entity.GiftCertificate;
+import com.epam.esm.persistence.model.entity.GiftCertificate;
 import com.epam.esm.service.dto.GiftCertificateDto;
 import com.epam.esm.service.dto.converter.GiftCertificateDtoConverter;
 import com.epam.esm.service.dto.converter.TagDtoConverter;

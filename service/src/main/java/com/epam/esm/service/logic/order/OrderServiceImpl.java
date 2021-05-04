@@ -1,15 +1,14 @@
 package com.epam.esm.service.logic.order;
 
-import com.epam.esm.persistence.entity.GiftCertificate;
-import com.epam.esm.persistence.entity.Order;
-import com.epam.esm.persistence.entity.User;
+import com.epam.esm.persistence.model.entity.GiftCertificate;
+import com.epam.esm.persistence.model.entity.Order;
+import com.epam.esm.persistence.model.entity.User;
 import com.epam.esm.persistence.repository.GiftCertificateRepository;
 import com.epam.esm.persistence.repository.OrderRepository;
 import com.epam.esm.persistence.repository.UserRepository;
 import com.epam.esm.service.dto.OrderDto;
 import com.epam.esm.service.dto.converter.OrderDtoConverter;
 import com.epam.esm.service.exception.NoSuchEntityException;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

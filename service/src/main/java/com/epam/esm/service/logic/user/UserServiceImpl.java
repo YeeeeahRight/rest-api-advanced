@@ -1,6 +1,6 @@
 package com.epam.esm.service.logic.user;
 
-import com.epam.esm.persistence.entity.User;
+import com.epam.esm.persistence.model.entity.User;
 import com.epam.esm.persistence.repository.UserRepository;
 import com.epam.esm.service.dto.UserDto;
 import com.epam.esm.service.dto.converter.UserDtoConverter;

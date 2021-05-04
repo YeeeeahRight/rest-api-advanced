@@ -1,7 +1,7 @@
 package com.epam.esm.service.dto.converter;
 
-import com.epam.esm.persistence.entity.GiftCertificate;
-import com.epam.esm.persistence.entity.Tag;
+import com.epam.esm.persistence.model.entity.GiftCertificate;
+import com.epam.esm.persistence.model.entity.Tag;
 import com.epam.esm.service.dto.GiftCertificateDto;
 import com.epam.esm.service.dto.TagDto;
 import org.springframework.beans.factory.annotation.Autowired;

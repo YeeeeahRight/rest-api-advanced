@@ -1,6 +1,6 @@
 package com.epam.esm.persistence.repository;
 
-import com.epam.esm.persistence.entity.Order;
+import com.epam.esm.persistence.model.entity.Order;
 
 import java.util.List;
 

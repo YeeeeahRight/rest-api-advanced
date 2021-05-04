@@ -1,4 +1,4 @@
-package com.epam.esm.persistence.entity;
+package com.epam.esm.persistence.model.entity;
 
 import javax.persistence.*;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package com.epam.esm.persistence.repository.impl;
 
-import com.epam.esm.persistence.entity.User;
+import com.epam.esm.persistence.model.entity.User;
 import com.epam.esm.persistence.repository.AbstractRepository;
 import com.epam.esm.persistence.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,8 +2,8 @@ package com.epam.esm.service.logic.certificate;
 
 import com.epam.esm.persistence.repository.GiftCertificateRepository;
 import com.epam.esm.persistence.repository.TagRepository;
-import com.epam.esm.persistence.entity.GiftCertificate;
-import com.epam.esm.persistence.entity.Tag;
+import com.epam.esm.persistence.model.entity.GiftCertificate;
+import com.epam.esm.persistence.model.entity.Tag;
 import com.epam.esm.service.dto.GiftCertificateDto;
 import com.epam.esm.service.dto.TagDto;
 import com.epam.esm.service.dto.converter.GiftCertificateDtoConverter;

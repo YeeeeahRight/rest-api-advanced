@@ -1,6 +1,6 @@
 package com.epam.esm.service.dto.converter;
 
-import com.epam.esm.persistence.entity.User;
+import com.epam.esm.persistence.model.entity.User;
 import com.epam.esm.service.dto.UserDto;
 import org.springframework.stereotype.Component;
 
