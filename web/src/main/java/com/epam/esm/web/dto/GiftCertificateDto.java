@@ -2,6 +2,7 @@ package com.epam.esm.web.dto;
 
 import com.fasterxml.jackson.annotation.*;
 
+import org.springframework.hateoas.RepresentationModel;
 import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
@@ -12,7 +13,7 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.Set;
 
-public class GiftCertificateDto {
+public class GiftCertificateDto extends RepresentationModel<GiftCertificateDto> {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
 
@@ -38,6 +39,7 @@ public class GiftCertificateDto {
     private int duration;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+
     private Set<@Valid TagDto> tags;
 
     @JsonCreator

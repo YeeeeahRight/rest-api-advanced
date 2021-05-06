@@ -3,12 +3,13 @@ package com.epam.esm.web.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
-public class OrderDto {
+public class OrderDto extends RepresentationModel<OrderDto> {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
 

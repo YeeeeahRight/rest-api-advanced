@@ -9,6 +9,7 @@ import com.epam.esm.service.logic.order.OrderService;
 import com.epam.esm.service.logic.tag.TagService;
 import com.epam.esm.service.logic.user.UserService;
 import com.epam.esm.web.dto.converter.DtoConverter;
+import com.epam.esm.web.link.LinkAdder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -27,19 +28,24 @@ public class UserController {
 
     private final DtoConverter<User, UserDto> userDtoConverter;
     private final DtoConverter<Order, OrderDto> orderDtoConverter;
-
+    private final LinkAdder<UserDto> userDtoLinkAdder;
+    private final LinkAdder<OrderDto> orderDtoLinkAdder;
 
     @Autowired
     public UserController(UserService userService,
                           OrderService orderService,
                           TagService tagService,
                           DtoConverter<User, UserDto> userDtoConverter,
-                          DtoConverter<Order, OrderDto> orderDtoConverter) {
+                          DtoConverter<Order, OrderDto> orderDtoConverter,
+                          LinkAdder<UserDto> userDtoLinkAdder,
+                          LinkAdder<OrderDto> orderDtoLinkAdder) {
         this.userService = userService;
         this.orderService = orderService;
         this.tagService = tagService;
         this.userDtoConverter = userDtoConverter;
         this.orderDtoConverter = orderDtoConverter;
+        this.userDtoLinkAdder = userDtoLinkAdder;
+        this.orderDtoLinkAdder = orderDtoLinkAdder;
     }
 
     @PostMapping
@@ -48,7 +54,9 @@ public class UserController {
         User user = userDtoConverter.convertToEntity(userDto);
         user = userService.create(user);
 
-        return userDtoConverter.convertToDto(user);
+        UserDto resultUserDto = userDtoConverter.convertToDto(user);
+        userDtoLinkAdder.addLinks(resultUserDto);
+        return resultUserDto;
     }
 
     @PostMapping("{id}/orders")
@@ -57,18 +65,21 @@ public class UserController {
                                 @RequestParam(name = "certificate_id") long certificateId) {
         Order order = orderService.create(id, certificateId);
 
-        return orderDtoConverter.convertToDto(order);
+        OrderDto orderDto = orderDtoConverter.convertToDto(order);
+        orderDtoLinkAdder.addLinks(orderDto);
+        return orderDto;
     }
 
     @GetMapping("{id}/orders")
     @ResponseStatus(HttpStatus.OK)
     public List<OrderDto> getAllOrders(@PathVariable long id,
                                        @RequestParam(value = "page", defaultValue = "0", required = false) int page,
-                                       @RequestParam(value = "size", defaultValue = "25", required = false) int size) {
+                                       @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
         List<Order> orders = orderService.getAllByUserId(id, page, size);
 
         return orders.stream()
                 .map(orderDtoConverter::convertToDto)
+                .peek(orderDtoLinkAdder::addLinks)
                 .collect(Collectors.toList());
     }
 
@@ -77,7 +88,9 @@ public class UserController {
     public OrderDto getOrder(@PathVariable long id, @PathVariable long orderId) {
         Order order = orderService.getByUserId(id, orderId);
 
-        return orderDtoConverter.convertToDto(order);
+        OrderDto orderDto = orderDtoConverter.convertToDto(order);
+        orderDtoLinkAdder.addLinks(orderDto);
+        return orderDto;
     }
 
     @GetMapping("{id}/best_tag")
@@ -89,11 +102,12 @@ public class UserController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<UserDto> getAll(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
-                                @RequestParam(value = "size", defaultValue = "25", required = false) int size){
+                                @RequestParam(value = "size", defaultValue = "50", required = false) int size){
         List<User> users = userService.getAll(page, size);
 
         return users.stream()
                 .map(userDtoConverter::convertToDto)
+                .peek(userDtoLinkAdder::addLinks)
                 .collect(Collectors.toList());
     }
 
@@ -102,6 +116,8 @@ public class UserController {
     public UserDto getById(@PathVariable long id) {
         User user = userService.getById(id);
 
-        return userDtoConverter.convertToDto(user);
+        UserDto userDto = userDtoConverter.convertToDto(user);
+        userDtoLinkAdder.addLinks(userDto);
+        return userDto;
     }
 }

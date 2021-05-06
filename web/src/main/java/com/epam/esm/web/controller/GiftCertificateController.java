@@ -4,12 +4,14 @@ import com.epam.esm.persistence.model.entity.GiftCertificate;
 import com.epam.esm.web.dto.GiftCertificateDto;
 import com.epam.esm.service.logic.certificate.GiftCertificateService;
 import com.epam.esm.web.dto.converter.DtoConverter;
+import com.epam.esm.web.link.LinkAdder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,12 +22,15 @@ public class GiftCertificateController {
     private final GiftCertificateService giftCertificateService;
 
     private final DtoConverter<GiftCertificate, GiftCertificateDto> certificateDtoConverter;
+    private final LinkAdder<GiftCertificateDto> certificateDtoLinkAdder;
 
     @Autowired
     public GiftCertificateController(GiftCertificateService giftCertificateService,
-                                     DtoConverter<GiftCertificate, GiftCertificateDto> certificateDtoConverter) {
+                                     DtoConverter<GiftCertificate, GiftCertificateDto> certificateDtoConverter,
+                                     LinkAdder<GiftCertificateDto> certificateDtoLinkAdder) {
         this.giftCertificateService = giftCertificateService;
         this.certificateDtoConverter = certificateDtoConverter;
+        this.certificateDtoLinkAdder = certificateDtoLinkAdder;
     }
 
     @PostMapping
@@ -34,7 +39,10 @@ public class GiftCertificateController {
         GiftCertificate giftCertificate = certificateDtoConverter.convertToEntity(giftCertificateDto);
         giftCertificate = giftCertificateService.create(giftCertificate);
 
-        return certificateDtoConverter.convertToDto(giftCertificate);
+        GiftCertificateDto resultCertificateDto = certificateDtoConverter.convertToDto(giftCertificate);
+        certificateDtoLinkAdder.addLinks(resultCertificateDto);
+
+        return resultCertificateDto;
     }
 
     @GetMapping
@@ -46,6 +54,7 @@ public class GiftCertificateController {
 
         return certificates.stream()
                 .map(certificateDtoConverter::convertToDto)
+                .peek(certificateDtoLinkAdder::addLinks)
                 .collect(Collectors.toList());
     }
 
@@ -61,9 +70,10 @@ public class GiftCertificateController {
         List<GiftCertificate> certificates = giftCertificateService.getAllWithTagsWithFilteringSorting(
                 tagNames, partInfo, sortColumns, orderTypes, page, size);
 
-        return certificates.stream()
-                .map(certificateDtoConverter::convertToDto)
-                .collect(Collectors.toList());
+        GiftCertificateDto resultCertificateDto = certificateDtoConverter.convertToDto(certificates.get(0));
+        certificateDtoLinkAdder.addLinks(resultCertificateDto);
+
+        return Arrays.asList(resultCertificateDto);
     }
 
     @GetMapping("/{id}")
@@ -71,7 +81,9 @@ public class GiftCertificateController {
     public GiftCertificateDto getById(@PathVariable("id") long id) {
         GiftCertificate giftCertificate = giftCertificateService.getById(id);
 
-        return certificateDtoConverter.convertToDto(giftCertificate);
+        GiftCertificateDto certificateDto = certificateDtoConverter.convertToDto(giftCertificate);
+        certificateDtoLinkAdder.addLinks(certificateDto);
+        return certificateDto;
     }
     
     @PatchMapping("/{id}")
@@ -81,7 +93,9 @@ public class GiftCertificateController {
         GiftCertificate giftCertificate = certificateDtoConverter.convertToEntity(giftCertificateDto);
         giftCertificate = giftCertificateService.updateById(id, giftCertificate);
 
-        return certificateDtoConverter.convertToDto(giftCertificate);
+        GiftCertificateDto resultCertificateDto = certificateDtoConverter.convertToDto(giftCertificate);
+        certificateDtoLinkAdder.addLinks(resultCertificateDto);
+        return resultCertificateDto;
     }
 
     @DeleteMapping("/{id}")

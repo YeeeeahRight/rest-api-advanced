@@ -30,6 +30,7 @@ public class TagServiceImplTest {
 
     @MockBean
     private TagRepositoryImpl tagDao;
+
     @MockBean
     private UserRepository userRepository;
 

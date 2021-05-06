@@ -2,11 +2,12 @@ package com.epam.esm.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
-public class UserDto {
+public class UserDto extends RepresentationModel<UserDto>  {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
 
