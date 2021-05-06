@@ -29,6 +29,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional
     public Tag create(Tag tag) {
         String tagName = tag.getName();
         boolean isTagExist = tagRepository.findByName(tagName).isPresent();
