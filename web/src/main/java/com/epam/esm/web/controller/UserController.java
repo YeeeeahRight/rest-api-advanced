@@ -23,29 +23,20 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService userService;
-    private final OrderService orderService;
     private final TagService tagService;
 
     private final DtoConverter<User, UserDto> userDtoConverter;
-    private final DtoConverter<Order, OrderDto> orderDtoConverter;
     private final LinkAdder<UserDto> userDtoLinkAdder;
-    private final LinkAdder<OrderDto> orderDtoLinkAdder;
 
     @Autowired
     public UserController(UserService userService,
-                          OrderService orderService,
                           TagService tagService,
                           DtoConverter<User, UserDto> userDtoConverter,
-                          DtoConverter<Order, OrderDto> orderDtoConverter,
-                          LinkAdder<UserDto> userDtoLinkAdder,
-                          LinkAdder<OrderDto> orderDtoLinkAdder) {
+                          LinkAdder<UserDto> userDtoLinkAdder) {
         this.userService = userService;
-        this.orderService = orderService;
         this.tagService = tagService;
         this.userDtoConverter = userDtoConverter;
-        this.orderDtoConverter = orderDtoConverter;
         this.userDtoLinkAdder = userDtoLinkAdder;
-        this.orderDtoLinkAdder = orderDtoLinkAdder;
     }
 
     @PostMapping
@@ -57,40 +48,6 @@ public class UserController {
         UserDto resultUserDto = userDtoConverter.convertToDto(user);
         userDtoLinkAdder.addLinks(resultUserDto);
         return resultUserDto;
-    }
-
-    @PostMapping("{id}/orders")
-    @ResponseStatus(HttpStatus.CREATED)
-    public OrderDto createOrder(@PathVariable long id,
-                                @RequestParam(name = "certificate_id") long certificateId) {
-        Order order = orderService.create(id, certificateId);
-
-        OrderDto orderDto = orderDtoConverter.convertToDto(order);
-        orderDtoLinkAdder.addLinks(orderDto);
-        return orderDto;
-    }
-
-    @GetMapping("{id}/orders")
-    @ResponseStatus(HttpStatus.OK)
-    public List<OrderDto> getAllOrders(@PathVariable long id,
-                                       @RequestParam(value = "page", defaultValue = "0", required = false) int page,
-                                       @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
-        List<Order> orders = orderService.getAllByUserId(id, page, size);
-
-        return orders.stream()
-                .map(orderDtoConverter::convertToDto)
-                .peek(orderDtoLinkAdder::addLinks)
-                .collect(Collectors.toList());
-    }
-
-    @GetMapping("{id}/orders/{orderId}")
-    @ResponseStatus(HttpStatus.OK)
-    public OrderDto getOrder(@PathVariable long id, @PathVariable long orderId) {
-        Order order = orderService.getByUserId(id, orderId);
-
-        OrderDto orderDto = orderDtoConverter.convertToDto(order);
-        orderDtoLinkAdder.addLinks(orderDto);
-        return orderDto;
     }
 
     @GetMapping("{id}/best_tag")
