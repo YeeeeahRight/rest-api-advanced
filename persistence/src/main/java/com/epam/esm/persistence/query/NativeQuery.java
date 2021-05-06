@@ -1,4 +1,4 @@
-package com.epam.esm.persistence.contstant;
+package com.epam.esm.persistence.query;
 
 public final class NativeQuery {
     public static final String MOST_WIDELY_USED_WITH_HIGHEST_ORDER_COST_TAG_QUERY =

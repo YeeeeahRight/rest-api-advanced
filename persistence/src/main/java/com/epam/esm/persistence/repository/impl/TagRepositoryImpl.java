@@ -1,7 +1,7 @@
 package com.epam.esm.persistence.repository.impl;
 
 import com.epam.esm.persistence.model.BestUserTag;
-import com.epam.esm.persistence.contstant.NativeQuery;
+import com.epam.esm.persistence.query.NativeQuery;
 import com.epam.esm.persistence.repository.AbstractRepository;
 import com.epam.esm.persistence.repository.TagRepository;
 import com.epam.esm.persistence.model.entity.Tag;
