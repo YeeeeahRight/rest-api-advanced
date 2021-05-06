@@ -1,16 +1,16 @@
 package com.epam.esm.persistence.model.entity;
 
+import com.epam.esm.persistence.audit.EntityAuditListener;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
+@EntityListeners(EntityAuditListener.class)
 @Table(name = "users")
-public class User {
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private long id;
+public class User extends AbstractEntity {
 
     @Column(length = 60, nullable = false)
     private String name;
@@ -21,17 +21,8 @@ public class User {
     public User() {
     }
 
-    public User(long id, String name) {
-        this.id = id;
+    public User(String name) {
         this.name = name;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -68,8 +59,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+                "name='" + name + '\'' +
+                "}";
     }
 }

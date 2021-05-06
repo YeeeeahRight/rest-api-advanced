@@ -1,15 +1,15 @@
 package com.epam.esm.persistence.model.entity;
 
+import com.epam.esm.persistence.audit.EntityAuditListener;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@EntityListeners(EntityAuditListener.class)
 @Table(name = "tags")
-public class Tag {
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private long id;
+public class Tag extends AbstractEntity{
 
     @Column(length = 60, nullable = false, unique = true)
     private String name;
@@ -18,20 +18,11 @@ public class Tag {
     private List<GiftCertificate> certificates = new ArrayList<>();
 
     public Tag() {
-
     }
 
     public Tag(long id, String name) {
-        this.id = id;
+        setId(id);
         this.name = name;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -72,8 +63,7 @@ public class Tag {
     @Override
     public String toString() {
         return "Tag{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+                "name='" + name + '\'' +
+                "}";
     }
 }

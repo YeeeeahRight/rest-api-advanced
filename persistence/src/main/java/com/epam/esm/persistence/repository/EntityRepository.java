@@ -1,6 +1,6 @@
 package com.epam.esm.persistence.repository;
 
-import org.springframework.data.domain.Page;
+import com.epam.esm.persistence.model.entity.AbstractEntity;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.Optional;
  *
  * @param <T> the type of entities
  */
-public interface EntityRepository<T> {
+public interface EntityRepository<T extends AbstractEntity> {
 
     /**
      * Creates new entity

@@ -1,16 +1,16 @@
 package com.epam.esm.persistence.model.entity;
 
+import com.epam.esm.persistence.audit.EntityAuditListener;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
 @Entity
+@EntityListeners(EntityAuditListener.class)
 @Table(name = "orders")
-public class Order {
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private long id;
+public class Order extends AbstractEntity {
 
     @Column(name = "order_date", nullable = false, updatable = false)
     private ZonedDateTime orderDate;
@@ -29,9 +29,8 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long id, ZonedDateTime orderDate, BigDecimal cost, User user,
+    public Order(ZonedDateTime orderDate, BigDecimal cost, User user,
                  GiftCertificate certificate) {
-        this.id = id;
         this.orderDate = orderDate;
         this.cost = cost;
         this.user = user;
@@ -41,14 +40,6 @@ public class Order {
     @PrePersist
     public void onCreate() {
         orderDate = ZonedDateTime.now();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public ZonedDateTime getOrderDate() {
@@ -108,10 +99,10 @@ public class Order {
     @Override
     public String toString() {
         return "Order{" +
-                "id=" + id +
-                ", orderDate=" + orderDate +
+                "orderDate=" + orderDate +
                 ", cost=" + cost +
                 ", user=" + user +
+                ", certificate=" + certificate +
                 '}';
     }
 }

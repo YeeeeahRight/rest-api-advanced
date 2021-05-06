@@ -1,16 +1,16 @@
 package com.epam.esm.persistence.model.entity;
 
+import com.epam.esm.persistence.audit.EntityAuditListener;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.*;
 
 @Entity
+@EntityListeners(EntityAuditListener.class)
 @Table(name = "certificates")
-public class GiftCertificate {
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private long id;
+public class GiftCertificate extends AbstractEntity {
 
     @Column(length = 80, nullable = false)
     private String name;
@@ -50,9 +50,9 @@ public class GiftCertificate {
         this.duration = duration;
     }
 
-    public GiftCertificate(long id, String name, String description, BigDecimal price,
-                           ZonedDateTime createDate, ZonedDateTime lastUpdateDate, int duration) {
-        this.id = id;
+    public GiftCertificate(long id, String name, String description, BigDecimal price, ZonedDateTime createDate,
+                           ZonedDateTime lastUpdateDate, int duration) {
+        setId(id);
         this.name = name;
         this.description = description;
         this.price = price;
@@ -70,14 +70,6 @@ public class GiftCertificate {
     @PreUpdate
     protected void onUpdate() {
         this.lastUpdateDate = ZonedDateTime.now();
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -174,6 +166,6 @@ public class GiftCertificate {
                 ", createDate=" + createDate +
                 ", lastUpdateDate=" + lastUpdateDate +
                 ", duration=" + duration +
-                '}';
+                "}";
     }
 }
