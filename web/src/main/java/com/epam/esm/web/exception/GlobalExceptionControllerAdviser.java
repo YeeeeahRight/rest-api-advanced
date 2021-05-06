@@ -74,8 +74,14 @@ public class GlobalExceptionControllerAdviser {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ExceptionResponse> handleNotReadableBodyException(Locale locale) {
-        final String message = "Required request body data is missing.";
-        return buildErrorResponse(resolveResourceBundle(message, locale), 40004, HttpStatus.BAD_REQUEST);
+        return buildErrorResponse(resolveResourceBundle("request.body.missing", locale),
+                40004, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ExceptionResponse> handle(Locale locale) {
+        return buildErrorResponse(resolveResourceBundle("constraint.data.missing", locale),
+                40000, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
