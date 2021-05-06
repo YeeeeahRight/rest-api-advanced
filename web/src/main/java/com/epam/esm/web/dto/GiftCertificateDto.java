@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 
 import org.springframework.hateoas.RepresentationModel;
 import javax.validation.Valid;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -17,12 +14,15 @@ public class GiftCertificateDto extends RepresentationModel<GiftCertificateDto> 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
 
+    @NotNull(message = "entity.data.missing")
     @Size(min = 1, max = 80, message = "certificate.name.invalid")
     private String name;
 
+    @NotNull(message = "entity.data.missing")
     @Size(min = 1, max = 200, message = "certificate.description.invalid")
     private String description;
 
+    @NotNull(message = "entity.data.missing")
     @DecimalMin(value = "0.1", inclusive = false, message = "certificate.price.invalid")
     @Digits(integer=9, fraction=4, message = "certificate.price.invalid")
     private BigDecimal price;
@@ -35,11 +35,11 @@ public class GiftCertificateDto extends RepresentationModel<GiftCertificateDto> 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
     private ZonedDateTime lastUpdateDate;
 
+    @NotNull(message = "entity.data.missing")
     @Min(value = 1, message = "certificate.duration.invalid")
-    private int duration;
+    private int duration = 0;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-
     private Set<@Valid TagDto> tags;
 
     @JsonCreator

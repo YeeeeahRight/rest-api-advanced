@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.hateoas.RepresentationModel;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
@@ -11,6 +12,7 @@ public class UserDto extends RepresentationModel<UserDto>  {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
 
+    @NotNull(message = "entity.data.missing")
     @Size(min = 1, max = 60, message = "user.invalid")
     private String name;
 

@@ -78,10 +78,11 @@ public class GlobalExceptionControllerAdviser {
                 40004, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ExceptionResponse> handle(Locale locale) {
-        return buildErrorResponse(resolveResourceBundle("constraint.data.missing", locale),
-                40000, HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(InvalidUpdateFieldsException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidUpdateFieldsException(
+            InvalidUpdateFieldsException e, Locale locale) {
+        return buildErrorResponse(resolveResourceBundle(e.getMessage(), locale),
+                40005, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)

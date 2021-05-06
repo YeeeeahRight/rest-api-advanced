@@ -38,7 +38,7 @@ public class GiftCertificateDtoConverter
                     .map(tagDtoConverter::convertToEntity).collect(Collectors.toSet());
             giftCertificate.setTags(tags);
         } else {
-            giftCertificate.setTags(Collections.emptySet());
+            giftCertificate.setTags(null);
         }
 
         return giftCertificate;

@@ -6,25 +6,26 @@ import com.epam.esm.persistence.model.entity.GiftCertificate;
 import com.epam.esm.persistence.model.entity.Tag;
 import com.epam.esm.service.exception.*;
 import com.epam.esm.persistence.model.SortParamsContext;
-import com.epam.esm.service.validator.Validator;
+import com.epam.esm.service.validator.SortParamsContextValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final GiftCertificateRepository certificateRepository;
     private final TagRepository tagRepository;
-    private final Validator<SortParamsContext> sortParametersValidator;
+    private final SortParamsContextValidator sortParametersValidator;
 
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateRepository certificateRepository,
                                       TagRepository tagRepository,
-                                      Validator<SortParamsContext> sortParametersValidator) {
+                                      SortParamsContextValidator sortParametersValidator) {
         this.certificateRepository = certificateRepository;
         this.tagRepository = tagRepository;
         this.sortParametersValidator = sortParametersValidator;
@@ -122,36 +123,22 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private void setUpdatedFields(GiftCertificate sourceCertificate,
                                   GiftCertificate certificateDto) {
-//        GiftCertificateValidator giftCertificateValidator =
-//                (GiftCertificateValidator) this.giftCertificateValidator;
-//        String name = certificateDto.getName();
-//        if (name != null) {
-//            if (!giftCertificateValidator.isNameValid(name)) {
-//                throw new InvalidEntityException("certificate.name.invalid");
-//            }
-//            sourceCertificate.setName(name);
-//        }
-//        String description = certificateDto.getDescription();
-//        if (description != null) {
-//            if (!giftCertificateValidator.isDescriptionValid(description)) {
-//                throw new InvalidEntityException("certificate.description.invalid");
-//            }
-//            sourceCertificate.setDescription(description);
-//        }
-//        BigDecimal price = certificateDto.getPrice();
-//        if (price != null) {
-//            if (!giftCertificateValidator.isPriceValid(price)) {
-//                throw new InvalidEntityException("certificate.price.invalid");
-//            }
-//            sourceCertificate.setPrice(price);
-//        }
-//        int duration = certificateDto.getDuration();
-//        if (duration != 0) {
-//            if (!giftCertificateValidator.isDurationValid(duration)) {
-//                throw new InvalidEntityException("certificate.duration.invalid");
-//            }
-//            sourceCertificate.setDuration(duration);
-//        }
+        String name = certificateDto.getName();
+        if (name != null && !sourceCertificate.getName().equals(name)) {
+            sourceCertificate.setName(name);
+        }
+        String description = certificateDto.getDescription();
+        if (description != null && !sourceCertificate.getDescription().equals(description)) {
+            sourceCertificate.setDescription(description);
+        }
+        BigDecimal price = certificateDto.getPrice();
+        if (price != null && sourceCertificate.getPrice().compareTo(price) != 0) {
+            sourceCertificate.setPrice(price);
+        }
+        int duration = certificateDto.getDuration();
+        if (duration != 0 && sourceCertificate.getDuration() != duration) {
+            sourceCertificate.setDuration(duration);
+        }
     }
 
     private Set<Tag> saveTags(Set<Tag> tags) {
@@ -169,22 +156,5 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             throw new InvalidParametersException("sort.params.invalid");
         }
     }
-
-//    private void validateCertificate(GiftCertificate giftCertificateDto) {
-//        if (!giftCertificateValidator.isValid(giftCertificateDto)) {
-//            throw new InvalidEntityException("certificate.invalid");
-//        }
-//    }
-//
-//    private void validateTags(Set<Tag> tags) {
-//        tags.forEach(this::validateTag);
-//    }
-//
-//    private void validateTag(Tag tag) {
-//        if (!tagEntityValidator.isValid(tag)) {
-//            throw new InvalidEntityException("tag.invalid");
-//        }
-//    }
-//
 
 }
