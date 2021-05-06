@@ -1,10 +1,14 @@
-package com.epam.esm.service.dto;
+package com.epam.esm.web.dto;
 
 import com.fasterxml.jackson.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -12,10 +16,14 @@ public class GiftCertificateDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
 
+    @Size(min = 1, max = 80, message = "certificate.name.invalid")
     private String name;
 
+    @Size(min = 1, max = 200, message = "certificate.description.invalid")
     private String description;
 
+    @DecimalMin(value = "0.1", inclusive = false, message = "certificate.price.invalid")
+    @Digits(integer=9, fraction=4, message = "certificate.price.invalid")
     private BigDecimal price;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -26,10 +34,11 @@ public class GiftCertificateDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
     private ZonedDateTime lastUpdateDate;
 
+    @Min(value = 1, message = "certificate.duration.invalid")
     private int duration;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Set<TagDto> tags;
+    private Set<@Valid TagDto> tags;
 
     @JsonCreator
     public GiftCertificateDto() {

@@ -1,4 +1,4 @@
-package com.epam.esm.service.dto.converter;
+package com.epam.esm.web.dto.converter;
 
 //TODO Use ModelMapper for converters
 

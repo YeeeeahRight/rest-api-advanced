@@ -1,31 +1,20 @@
-package com.epam.esm.service.dto;
+package com.epam.esm.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
-public class TagDto {
+public class UserDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
 
+    @Size(min = 1, max = 60, message = "user.invalid")
     private String name;
 
     @JsonCreator
-    public TagDto() {
-    }
-
-    public TagDto(long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public UserDto() {
     }
 
     public long getId() {
@@ -36,14 +25,22 @@ public class TagDto {
         this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TagDto tagDto = (TagDto) o;
+        UserDto userDto = (UserDto) o;
 
-        return Objects.equals(name, tagDto.name);
+        return Objects.equals(name, userDto.name);
     }
 
     @Override

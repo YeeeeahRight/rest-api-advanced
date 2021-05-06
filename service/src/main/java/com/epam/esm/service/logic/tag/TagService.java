@@ -1,13 +1,12 @@
 package com.epam.esm.service.logic.tag;
 
 import com.epam.esm.persistence.model.BestUserTag;
-import com.epam.esm.service.dto.TagDto;
+import com.epam.esm.persistence.model.entity.Tag;
 import com.epam.esm.service.exception.DuplicateEntityException;
-import com.epam.esm.service.exception.InvalidEntityException;
 import com.epam.esm.service.exception.InvalidParametersException;
 import com.epam.esm.service.exception.NoSuchEntityException;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * Business logic interface for Tags.
@@ -16,22 +15,21 @@ public interface TagService {
     /**
      * Creates new Tag.
      *
-     * @param tagDto Tag to create
+     * @param tag Tag to create
      * @return created Tag
-     * @throws InvalidEntityException   when Tag data is invalid
      * @throws DuplicateEntityException when Tag is already exist
      */
-    TagDto create(TagDto tagDto);
+    Tag create(Tag tag);
 
     /**
      * Gets all Tags.
      *
      * @param page page number of Tags
      * @param size page size
-     * @return Set of all Tags
+     * @return List of all Tags
      * @throws InvalidParametersException when page or size params are invalid
      */
-    Set<TagDto> getAll(int page, int size);
+    List<Tag> getAll(int page, int size);
 
     /**
      * Gets Tag by id.
@@ -40,7 +38,7 @@ public interface TagService {
      * @return founded Tag
      * @throws NoSuchEntityException when Tag is not found
      */
-    TagDto getById(long id);
+    Tag getById(long id);
 
     /**
      * Deletes Tag by id.

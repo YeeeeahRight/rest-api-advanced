@@ -1,6 +1,6 @@
 package com.epam.esm.service.logic.order;
 
-import com.epam.esm.service.dto.OrderDto;
+import com.epam.esm.persistence.model.entity.Order;
 import com.epam.esm.service.exception.InvalidParametersException;
 import com.epam.esm.service.exception.NoSuchEntityException;
 
@@ -19,7 +19,7 @@ public interface OrderService {
      * @return created Order
      * @throws NoSuchEntityException when User or Certificate not found
      */
-    OrderDto create(long userId, long certificateId);
+    Order create(long userId, long certificateId);
 
     /**
      * Gets all Orders by user id.
@@ -31,7 +31,7 @@ public interface OrderService {
      * @throws NoSuchEntityException      when User not found
      * @throws InvalidParametersException when page or size params are invalid
      */
-    List<OrderDto> getAllByUserId(long userId, int page, int size);
+    List<Order> getAllByUserId(long userId, int page, int size);
 
     /**
      * Gets Order by order and user id.
@@ -41,5 +41,5 @@ public interface OrderService {
      * @return founded Order
      * @throws NoSuchEntityException when User or Order not found
      */
-    OrderDto getByUserId(long userId, long orderId);
+    Order getByUserId(long userId, long orderId);
 }

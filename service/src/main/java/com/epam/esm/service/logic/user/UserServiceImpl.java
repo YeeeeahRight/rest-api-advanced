@@ -2,12 +2,8 @@ package com.epam.esm.service.logic.user;
 
 import com.epam.esm.persistence.model.entity.User;
 import com.epam.esm.persistence.repository.UserRepository;
-import com.epam.esm.service.dto.UserDto;
-import com.epam.esm.service.dto.converter.UserDtoConverter;
-import com.epam.esm.service.exception.InvalidEntityException;
 import com.epam.esm.service.exception.InvalidParametersException;
 import com.epam.esm.service.exception.NoSuchEntityException;
-import com.epam.esm.service.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,35 +11,24 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final UserDtoConverter userDtoConverter;
-    private final Validator<UserDto> userValidator;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserDtoConverter userDtoConverter,
-                           Validator<UserDto> userValidator) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.userDtoConverter = userDtoConverter;
-        this.userValidator = userValidator;
     }
 
     @Override
-    public UserDto create(UserDto userDto) {
-        if (!userValidator.isValid(userDto)) {
-            throw new InvalidEntityException("user.invalid");
-        }
-        User user = userDtoConverter.convertToEntity(userDto);
-        user = userRepository.create(user);
-        return userDtoConverter.convertToDto(user);
+    public User create(User user) {
+        return userRepository.create(user);
     }
 
     @Override
-    public List<UserDto> getAll(int page, int size) {
+    public List<User> getAll(int page, int size) {
         Pageable pageRequest;
         try {
             pageRequest = PageRequest.of(page, size);
@@ -51,18 +36,15 @@ public class UserServiceImpl implements UserService {
             throw new InvalidParametersException("pagination.invalid");
         }
 
-        List<User> users = userRepository.getAll(pageRequest);
-        return users.stream()
-                .map(userDtoConverter::convertToDto)
-                .collect(Collectors.toList());
+        return userRepository.getAll(pageRequest);
     }
 
     @Override
-    public UserDto getById(long id) {
+    public User getById(long id) {
         Optional<User> userOptional = userRepository.findById(id);
         if (!userOptional.isPresent()) {
             throw new NoSuchEntityException("user.not.found");
         }
-        return userDtoConverter.convertToDto(userOptional.get());
+        return userOptional.get();
     }
 }

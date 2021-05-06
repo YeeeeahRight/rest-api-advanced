@@ -10,6 +10,4 @@ public final class NativeQuery {
                     "GROUP BY t.id\n" +
                     "ORDER BY COUNT(t.id) DESC, MAX(o.cost) DESC\n" +
                     "LIMIT 1";
-
-
 }

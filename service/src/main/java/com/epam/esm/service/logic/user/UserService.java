@@ -1,8 +1,6 @@
 package com.epam.esm.service.logic.user;
 
-import com.epam.esm.service.dto.UserDto;
-import com.epam.esm.service.exception.DuplicateEntityException;
-import com.epam.esm.service.exception.InvalidEntityException;
+import com.epam.esm.persistence.model.entity.User;
 import com.epam.esm.service.exception.InvalidParametersException;
 import com.epam.esm.service.exception.NoSuchEntityException;
 
@@ -18,9 +16,8 @@ public interface UserService {
      *
      * @param userDto User to create
      * @return created User
-     * @throws InvalidEntityException when User data is invalid
      */
-    UserDto create(UserDto userDto);
+    User create(User userDto);
 
     /**
      * Gets all Users.
@@ -30,7 +27,7 @@ public interface UserService {
      * @return List of all Tags
      * @throws InvalidParametersException when page or size params are invalid
      */
-    List<UserDto> getAll(int page, int size);
+    List<User> getAll(int page, int size);
 
     /**
      * Gets User by id.
@@ -39,5 +36,5 @@ public interface UserService {
      * @return founded User
      * @throws NoSuchEntityException when User is not found
      */
-    UserDto getById(long id);
+    User getById(long id);
 }

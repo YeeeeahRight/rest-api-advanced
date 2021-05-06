@@ -6,15 +6,9 @@ import com.epam.esm.persistence.model.SortParamsContext;
 import com.epam.esm.persistence.repository.impl.GiftCertificateRepositoryImpl;
 import com.epam.esm.persistence.repository.impl.TagRepositoryImpl;
 import com.epam.esm.persistence.model.entity.GiftCertificate;
-import com.epam.esm.service.dto.GiftCertificateDto;
-import com.epam.esm.service.dto.converter.GiftCertificateDtoConverter;
-import com.epam.esm.service.dto.converter.TagDtoConverter;
-import com.epam.esm.service.exception.InvalidEntityException;
 import com.epam.esm.service.exception.NoSuchEntityException;
 import com.epam.esm.service.logic.certificate.GiftCertificateServiceImpl;
-import com.epam.esm.service.validator.GiftCertificateValidator;
 import com.epam.esm.service.validator.SortParamsContextValidator;
-import com.epam.esm.service.validator.TagValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,9 +36,6 @@ public class GiftCertificateServiceImplTest {
     private static final GiftCertificate GIFT_CERTIFICATE = new GiftCertificate(
             ID, NAME, DESCRIPTION,PRICE, CREATE_TIME, UPDATE_TIME, DURATION
     );
-    private static final GiftCertificateDto GIFT_CERTIFICATE_DTO = new GiftCertificateDto(
-            ID, NAME, DESCRIPTION,PRICE, CREATE_TIME, UPDATE_TIME, DURATION
-    );
 
     private static final String PART_INFO = "z";
     private static final List<String> SORTING_COLUMN = Collections.singletonList("name");
@@ -56,39 +47,17 @@ public class GiftCertificateServiceImplTest {
     @MockBean
     private GiftCertificateRepositoryImpl certificateDao;
     @MockBean
-    private GiftCertificateValidator certificateValidator;
-    @MockBean
     private TagRepositoryImpl tagDao;
     @MockBean
-    private TagValidator tagValidator;
-    @MockBean
     private SortParamsContextValidator sortParamsContextValidator;
-    @MockBean
-    private GiftCertificateDtoConverter giftCertificateDtoConverter;
-    @MockBean
-    private TagDtoConverter tagDtoConverter;
-
     @Autowired
     private GiftCertificateServiceImpl giftCertificateService;
 
-    @Before
-    public void init() {
-        when(giftCertificateDtoConverter.convertToDto(GIFT_CERTIFICATE)).thenReturn(GIFT_CERTIFICATE_DTO);
-        when(giftCertificateDtoConverter.convertToEntity(GIFT_CERTIFICATE_DTO)).thenReturn(GIFT_CERTIFICATE);
-    }
 
     @Test
     public void testCreateShouldCreateWhenNotExistAndValid() {
-        when(certificateValidator.isValid(any())).thenReturn(true);
-        when(tagValidator.isValid(any())).thenReturn(true);
-        giftCertificateService.create(GIFT_CERTIFICATE_DTO);
+        giftCertificateService.create(GIFT_CERTIFICATE);
         verify(certificateDao).create(GIFT_CERTIFICATE);
-    }
-
-    @Test(expected = InvalidEntityException.class)
-    public void testCreateShouldThrowsInvalidEntityExceptionWhenNotValid() {
-        when(certificateValidator.isValid(any())).thenReturn(false);
-        giftCertificateService.create(GIFT_CERTIFICATE_DTO);
     }
 
     @Test
@@ -144,18 +113,14 @@ public class GiftCertificateServiceImplTest {
     @Test
     public void testUpdateByIdShouldUpdateWhenFound() {
         when(certificateDao.findById(anyLong())).thenReturn(Optional.of(GIFT_CERTIFICATE));
-        when(certificateValidator.isNameValid(anyString())).thenReturn(true);
-        when(certificateValidator.isDescriptionValid(anyString())).thenReturn(true);
-        when(certificateValidator.isDurationValid(anyInt())).thenReturn(true);
-        when(certificateValidator.isPriceValid(any())).thenReturn(true);
-        giftCertificateService.updateById(ID, GIFT_CERTIFICATE_DTO);
+        giftCertificateService.updateById(ID, GIFT_CERTIFICATE);
         verify(certificateDao).update(GIFT_CERTIFICATE);
     }
 
     @Test(expected = NoSuchEntityException.class)
     public void testUpdateByIdShouldThrowsNoSuchEntityExceptionWhenNotFound() {
         when(certificateDao.findById(anyLong())).thenReturn(Optional.empty());
-        giftCertificateService.updateById(ID, GIFT_CERTIFICATE_DTO);
+        giftCertificateService.updateById(ID, GIFT_CERTIFICATE);
     }
 
     @Test

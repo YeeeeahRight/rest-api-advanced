@@ -5,14 +5,9 @@ import static org.mockito.Mockito.*;
 import com.epam.esm.persistence.repository.UserRepository;
 import com.epam.esm.persistence.repository.impl.TagRepositoryImpl;
 import com.epam.esm.persistence.model.entity.Tag;
-import com.epam.esm.service.dto.TagDto;
-import com.epam.esm.service.dto.converter.TagDtoConverter;
 import com.epam.esm.service.exception.DuplicateEntityException;
-import com.epam.esm.service.exception.InvalidEntityException;
 import com.epam.esm.service.exception.NoSuchEntityException;
 import com.epam.esm.service.logic.tag.TagServiceImpl;
-import com.epam.esm.service.validator.TagValidator;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +24,6 @@ public class TagServiceImplTest {
     private static final long ID = 1;
     private static final String NAME = "tag";
     private static final Tag TAG = new Tag(ID,NAME);
-    private static final TagDto TAG_DTO = new TagDto(ID, NAME);
 
     private static final int DEFAULT_PAGE = 0;
     private static final int DEFAULT_PAGE_SIZE = 50;
@@ -37,41 +31,22 @@ public class TagServiceImplTest {
     @MockBean
     private TagRepositoryImpl tagDao;
     @MockBean
-    private TagValidator tagValidator;
-    @MockBean
-    private TagDtoConverter tagDtoConverter;
-    @MockBean
     private UserRepository userRepository;
 
     @Autowired
     private TagServiceImpl tagService;
 
-    @Before
-    public void init() {
-        when(tagDtoConverter.convertToDto(TAG)).thenReturn(TAG_DTO);
-        when(tagDtoConverter.convertToEntity(TAG_DTO)).thenReturn(TAG);
-    }
-
-
     @Test
     public void testCreateShouldCreateWhenValidAndNotExist() {
-        when(tagValidator.isValid(TAG_DTO)).thenReturn(true);
         when(tagDao.findByName(NAME)).thenReturn(Optional.empty());
-        tagService.create(TAG_DTO);
+        tagService.create(TAG);
         verify(tagDao).create(TAG);
-    }
-
-    @Test(expected = InvalidEntityException.class)
-    public void testCreateShouldThrowsInvalidEntityExceptionWhenInvalid() {
-        when(tagValidator.isValid(TAG_DTO)).thenReturn(false);
-        tagService.create(TAG_DTO);
     }
 
     @Test(expected = DuplicateEntityException.class)
     public void testCreateShouldThrowsDuplicateEntityExceptionWhenExist() {
-        when(tagValidator.isValid(TAG_DTO)).thenReturn(true);
         when(tagDao.findByName(NAME)).thenReturn(Optional.of(TAG));
-        tagService.create(TAG_DTO);
+        tagService.create(TAG);
     }
 
     @Test

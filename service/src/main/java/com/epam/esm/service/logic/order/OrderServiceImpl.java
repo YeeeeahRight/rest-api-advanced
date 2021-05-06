@@ -6,8 +6,6 @@ import com.epam.esm.persistence.model.entity.User;
 import com.epam.esm.persistence.repository.GiftCertificateRepository;
 import com.epam.esm.persistence.repository.OrderRepository;
 import com.epam.esm.persistence.repository.UserRepository;
-import com.epam.esm.service.dto.OrderDto;
-import com.epam.esm.service.dto.converter.OrderDtoConverter;
 import com.epam.esm.service.exception.InvalidParametersException;
 import com.epam.esm.service.exception.NoSuchEntityException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,20 +23,18 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final GiftCertificateRepository certificateRepository;
     private final UserRepository userRepository;
-    private final OrderDtoConverter orderDtoConverter;
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
                             GiftCertificateRepository certificateRepository,
-                            UserRepository userRepository, OrderDtoConverter orderDtoConverter) {
+                            UserRepository userRepository) {
         this.orderRepository = orderRepository;
         this.certificateRepository = certificateRepository;
         this.userRepository = userRepository;
-        this.orderDtoConverter = orderDtoConverter;
     }
 
     @Override
-    public OrderDto create(long userId, long certificateId) {
+    public Order create(long userId, long certificateId) {
         Order order = new Order();
         Optional<User> userOptional = userRepository.findById(userId);
         if (!userOptional.isPresent()) {
@@ -53,13 +49,11 @@ public class OrderServiceImpl implements OrderService {
         order.setCertificate(certificate);
         order.setCost(certificate.getPrice());
 
-        order = orderRepository.create(order);
-
-        return orderDtoConverter.convertToDto(order);
+        return orderRepository.create(order);
     }
 
     @Override
-    public List<OrderDto> getAllByUserId(long userId, int page, int size) {
+    public List<Order> getAllByUserId(long userId, int page, int size) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (!optionalUser.isPresent()) {
             throw new NoSuchEntityException("user.not.found");
@@ -71,15 +65,11 @@ public class OrderServiceImpl implements OrderService {
             throw new InvalidParametersException("pagination.invalid");
         }
 
-        List<Order> orders = orderRepository.getAllByUserId(userId, pageRequest);
-
-        return orders.stream()
-                .map(orderDtoConverter::convertToDto)
-                .collect(Collectors.toList());
+        return orderRepository.getAllByUserId(userId, pageRequest);
     }
 
     @Override
-    public OrderDto getByUserId(long userId, long orderId) {
+    public Order getByUserId(long userId, long orderId) {
         Optional<Order> orderOptional = orderRepository.findById(orderId);
         if (!orderOptional.isPresent()) {
             throw new NoSuchEntityException("order.not.found");
@@ -94,6 +84,7 @@ public class OrderServiceImpl implements OrderService {
         if (orders == null || orders.isEmpty() || !orders.contains(order)) {
             throw new NoSuchEntityException("order.not.found");
         }
-        return orderDtoConverter.convertToDto(order);
+
+        return order;
     }
 }
