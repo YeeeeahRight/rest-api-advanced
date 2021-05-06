@@ -21,7 +21,8 @@ public class User extends AbstractEntity {
     public User() {
     }
 
-    public User(String name) {
+    public User(long id, String name) {
+        setId(id);
         this.name = name;
     }
 

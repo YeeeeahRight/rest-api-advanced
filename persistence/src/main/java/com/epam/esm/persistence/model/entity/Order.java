@@ -29,8 +29,9 @@ public class Order extends AbstractEntity {
     public Order() {
     }
 
-    public Order(ZonedDateTime orderDate, BigDecimal cost, User user,
+    public Order(long id, ZonedDateTime orderDate, BigDecimal cost, User user,
                  GiftCertificate certificate) {
+        setId(id);
         this.orderDate = orderDate;
         this.cost = cost;
         this.user = user;

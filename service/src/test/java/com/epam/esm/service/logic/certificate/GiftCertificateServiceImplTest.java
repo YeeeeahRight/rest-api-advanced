@@ -1,15 +1,15 @@
-package com.epam.esm.service.logic;
+package com.epam.esm.service.logic.certificate;
 
 import static org.mockito.Mockito.*;
 
 import com.epam.esm.persistence.model.SortParamsContext;
+import com.epam.esm.persistence.model.entity.Tag;
 import com.epam.esm.persistence.repository.impl.GiftCertificateRepositoryImpl;
 import com.epam.esm.persistence.repository.impl.TagRepositoryImpl;
 import com.epam.esm.persistence.model.entity.GiftCertificate;
+import com.epam.esm.service.exception.InvalidParametersException;
 import com.epam.esm.service.exception.NoSuchEntityException;
-import com.epam.esm.service.logic.certificate.GiftCertificateServiceImpl;
 import com.epam.esm.service.validator.SortParamsContextValidator;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +36,14 @@ public class GiftCertificateServiceImplTest {
     private static final GiftCertificate GIFT_CERTIFICATE = new GiftCertificate(
             ID, NAME, DESCRIPTION,PRICE, CREATE_TIME, UPDATE_TIME, DURATION
     );
+    private static final Tag TAG = new Tag(ID, "new");
+    private static final GiftCertificate GIFT_CERTIFICATE_WITH_TAGS = new GiftCertificate(
+            ID, NAME, DESCRIPTION, PRICE, CREATE_TIME, UPDATE_TIME, DURATION
+    );
+
+    static {
+        GIFT_CERTIFICATE_WITH_TAGS.setTags(Collections.singleton(TAG));
+    }
 
     private static final String PART_INFO = "z";
     private static final List<String> SORTING_COLUMN = Collections.singletonList("name");
@@ -45,9 +53,9 @@ public class GiftCertificateServiceImplTest {
     private static final int DEFAULT_PAGE_SIZE = 50;
 
     @MockBean
-    private GiftCertificateRepositoryImpl certificateDao;
+    private GiftCertificateRepositoryImpl certificateRepository;
     @MockBean
-    private TagRepositoryImpl tagDao;
+    private TagRepositoryImpl tagRepository;
     @MockBean
     private SortParamsContextValidator sortParamsContextValidator;
     @Autowired
@@ -55,84 +63,108 @@ public class GiftCertificateServiceImplTest {
 
 
     @Test
-    public void testCreateShouldCreateWhenNotExistAndValid() {
+    public void testCreateShouldCreateWhenNotExist() {
         giftCertificateService.create(GIFT_CERTIFICATE);
-        verify(certificateDao).create(GIFT_CERTIFICATE);
+        verify(certificateRepository).create(GIFT_CERTIFICATE);
     }
 
     @Test
     public void testGetAllShouldGetAll() {
         giftCertificateService.getAll(DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
-        verify(certificateDao).getAll(any());
+        verify(certificateRepository).getAll(any());
+    }
+
+    @Test(expected = InvalidParametersException.class)
+    public void testGetAllShouldThrowsInvalidParametersExceptionWhenParamsInvalid() {
+        giftCertificateService.getAll(-3, -2);
+    }
+
+    @Test(expected = InvalidParametersException.class)
+    public void getAllWithTagsShouldThrowsInvalidParametersExceptionWhenParamsInvalid() {
+        giftCertificateService.getAllWithTagsWithFilteringSorting(null, null,
+                null, null, -3, -2);
     }
 
     @Test
     public void testGetByIdShouldGetWhenFound() {
-        when(certificateDao.findById(anyLong())).thenReturn(Optional.of(GIFT_CERTIFICATE));
+        when(certificateRepository.findById(anyLong())).thenReturn(Optional.of(GIFT_CERTIFICATE));
         giftCertificateService.getById(ID);
-        verify(certificateDao).findById(ID);
+        verify(certificateRepository).findById(ID);
     }
 
     @Test(expected = NoSuchEntityException.class)
-    public void testGetByIdShouldThrowsNotSuchEntityExceptionWhenNotFound() {
-        when(certificateDao.findById(anyLong())).thenReturn(Optional.empty());
+    public void testGetByIdShouldThrowsNoSuchEntityExceptionWhenNotFound() {
+        when(certificateRepository.findById(anyLong())).thenReturn(Optional.empty());
         giftCertificateService.getById(ID);
     }
 
     @Test
-    public void getAllWithTagsShouldGetAllWhenFilteringAndSortingNotExist() {
-        giftCertificateService.getAllWithTagsWithFilteringSorting(null, null, null,
-                null, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
-        verify(certificateDao).getAllWithSortingFiltering(any(), any(), any(), any());
+    public void getAllWithTagsShouldGetWhenFilteringAndSortingNotExist() {
+        giftCertificateService.getAllWithTagsWithFilteringSorting(null, null,
+                null, null, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
+        verify(certificateRepository).getAllWithSortingFiltering(any(), any(), any(), any());
     }
 
     @Test
     public void getAllWithTagsShouldGetWithFilteringWhenFilteringExist() {
         giftCertificateService.getAllWithTagsWithFilteringSorting(null, PART_INFO, null,
                 null, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
-        verify(certificateDao).getAllWithSortingFiltering(any(), any(), eq(PART_INFO), any());
+        verify(certificateRepository).getAllWithSortingFiltering(any(), any(), eq(PART_INFO), any());
     }
 
     @Test
-    public void getAllWithTagsShouldGetWithSortingWhenSoringExist() {
+    public void getAllWithTagsShouldGetWithSortingWhenSortingExist() {
         when(sortParamsContextValidator.isValid(any())).thenReturn(true);
         giftCertificateService.getAllWithTagsWithFilteringSorting(null, null,
-                Collections.singletonList("name"), null, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
-        verify(certificateDao).getAllWithSortingFiltering(any(), any(), any(), any());
+                SORTING_COLUMN, null, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
+        verify(certificateRepository).getAllWithSortingFiltering(eq(SORT_PARAMS), any(), any(), any());
+    }
+
+    @Test(expected = InvalidParametersException.class)
+    public void getAllWithTagsShouldThrowsInvalidParametersExceptionWhenSortParamsInvalid() {
+        when(sortParamsContextValidator.isValid(any())).thenReturn(false);
+        giftCertificateService.getAllWithTagsWithFilteringSorting(null, null,
+                SORTING_COLUMN, null, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
     }
 
     @Test
     public void getAllWithTagsShouldGetWithSoringAndFilteringWhenSoringAndFilteringExist() {
         when(sortParamsContextValidator.isValid(any())).thenReturn(true);
-        giftCertificateService.getAllWithTagsWithFilteringSorting(null, "p",
+        giftCertificateService.getAllWithTagsWithFilteringSorting(null, PART_INFO,
                 SORTING_COLUMN, null, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
-        verify(certificateDao).getAllWithSortingFiltering(eq(SORT_PARAMS), any(), anyString(), any());
+        verify(certificateRepository).getAllWithSortingFiltering(eq(SORT_PARAMS), any(), eq(PART_INFO), any());
     }
-
 
     @Test
     public void testUpdateByIdShouldUpdateWhenFound() {
-        when(certificateDao.findById(anyLong())).thenReturn(Optional.of(GIFT_CERTIFICATE));
+        when(certificateRepository.findById(anyLong())).thenReturn(Optional.of(GIFT_CERTIFICATE));
         giftCertificateService.updateById(ID, GIFT_CERTIFICATE);
-        verify(certificateDao).update(GIFT_CERTIFICATE);
+        verify(certificateRepository).update(GIFT_CERTIFICATE);
+    }
+
+    @Test
+    public void testUpdateByIdShouldCreateTagWhenNewTagPassed() {
+        when(certificateRepository.findById(anyLong())).thenReturn(Optional.of(GIFT_CERTIFICATE_WITH_TAGS));        when(tagRepository.findByName(any())).thenReturn(Optional.empty());
+        giftCertificateService.updateById(ID, GIFT_CERTIFICATE_WITH_TAGS);
+        verify(tagRepository).create(TAG);
     }
 
     @Test(expected = NoSuchEntityException.class)
     public void testUpdateByIdShouldThrowsNoSuchEntityExceptionWhenNotFound() {
-        when(certificateDao.findById(anyLong())).thenReturn(Optional.empty());
+        when(certificateRepository.findById(anyLong())).thenReturn(Optional.empty());
         giftCertificateService.updateById(ID, GIFT_CERTIFICATE);
     }
 
     @Test
     public void testDeleteByIdShouldDeleteWhenFound() {
-        when(certificateDao.findById(anyLong())).thenReturn(Optional.of(GIFT_CERTIFICATE));
+        when(certificateRepository.findById(anyLong())).thenReturn(Optional.of(GIFT_CERTIFICATE));
         giftCertificateService.deleteById(ID);
-        verify(certificateDao).deleteById(ID);
+        verify(certificateRepository).deleteById(ID);
     }
 
     @Test(expected = NoSuchEntityException.class)
     public void testDeleteByIdShouldThrowsNoSuchEntityExceptionWhenNotFound() {
-        when(certificateDao.findById(anyLong())).thenReturn(Optional.empty());
+        when(certificateRepository.findById(anyLong())).thenReturn(Optional.empty());
         giftCertificateService.deleteById(ID);
     }
 }

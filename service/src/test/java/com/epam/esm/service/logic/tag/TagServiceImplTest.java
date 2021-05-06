@@ -1,4 +1,4 @@
-package com.epam.esm.service.logic;
+package com.epam.esm.service.logic.tag;
 
 import static org.mockito.Mockito.*;
 
@@ -6,6 +6,7 @@ import com.epam.esm.persistence.repository.UserRepository;
 import com.epam.esm.persistence.repository.impl.TagRepositoryImpl;
 import com.epam.esm.persistence.model.entity.Tag;
 import com.epam.esm.service.exception.DuplicateEntityException;
+import com.epam.esm.service.exception.InvalidParametersException;
 import com.epam.esm.service.exception.NoSuchEntityException;
 import com.epam.esm.service.logic.tag.TagServiceImpl;
 import org.junit.Test;
@@ -16,7 +17,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
-//сколько %
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {TagServiceImpl.class})
@@ -38,7 +38,7 @@ public class TagServiceImplTest {
     private TagServiceImpl tagService;
 
     @Test
-    public void testCreateShouldCreateWhenValidAndNotExist() {
+    public void testCreateShouldCreateWhenNotExist() {
         when(tagDao.findByName(NAME)).thenReturn(Optional.empty());
         tagService.create(TAG);
         verify(tagDao).create(TAG);
@@ -56,6 +56,11 @@ public class TagServiceImplTest {
         verify(tagDao).getAll(any());
     }
 
+    @Test(expected = InvalidParametersException.class)
+    public void testGetAllShouldThrowsInvalidParametersExceptionWhenParamsInvalid() {
+        tagService.getAll(-3, -2);
+    }
+
     @Test
     public void testGetByIdShouldGetWhenFound() {
         when(tagDao.findById(ID)).thenReturn(Optional.of(TAG));
@@ -64,7 +69,7 @@ public class TagServiceImplTest {
     }
 
     @Test(expected = NoSuchEntityException.class)
-    public void testGetByIdShouldThrowsNotSuchEntityExceptionWhenNotFound() {
+    public void testGetByIdShouldThrowsNoSuchEntityExceptionWhenNotFound() {
         when(tagDao.findById(ID)).thenReturn(Optional.empty());
         tagService.getById(ID);
     }
@@ -80,5 +85,17 @@ public class TagServiceImplTest {
     public void testDeleteByIdShouldThrowsNoSuchEntityExceptionWhenNotFound() {
         when(tagDao.findById(ID)).thenReturn(Optional.empty());
         tagService.deleteById(ID);
+    }
+
+    public void testGetUserMostWidelyUsedTagWithHighestOrderCostShouldGetWhenFound() {
+        when(tagDao.findById(ID)).thenReturn(Optional.of(TAG));
+        tagService.getUserMostWidelyUsedTagWithHighestOrderCost(ID);
+        verify(tagDao).findUserMostWidelyUsedTagWithHighestOrderCost(eq(ID));
+    }
+
+    @Test(expected = NoSuchEntityException.class)
+    public void testGetUserMostWidelyUsedTagWithHighestOrderCostShouldThrowsWhenNotFound() {
+        when(tagDao.findById(ID)).thenReturn(Optional.of(TAG));
+        tagService.getUserMostWidelyUsedTagWithHighestOrderCost(ID);
     }
 }

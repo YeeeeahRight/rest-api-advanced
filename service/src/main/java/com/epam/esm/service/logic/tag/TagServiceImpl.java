@@ -64,6 +64,16 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional
+    public void deleteById(long id) {
+        Optional<Tag> optionalTag = tagRepository.findById(id);
+        if (!optionalTag.isPresent()) {
+            throw new NoSuchEntityException("tag.not.found");
+        }
+        tagRepository.deleteById(id);
+    }
+
+    @Override
     public BestUserTag getUserMostWidelyUsedTagWithHighestOrderCost(long userId) {
         if (!userRepository.findById(userId).isPresent()) {
             throw new NoSuchEntityException("user.not.found");
@@ -74,15 +84,5 @@ public class TagServiceImpl implements TagService {
             throw new NoSuchEntityException("user.no.tags");
         }
         return bestUserTagOptional.get();
-    }
-
-    @Override
-    @Transactional
-    public void deleteById(long id) {
-        Optional<Tag> optionalTag = tagRepository.findById(id);
-        if (!optionalTag.isPresent()) {
-            throw new NoSuchEntityException("tag.not.found");
-        }
-        tagRepository.deleteById(id);
     }
 }

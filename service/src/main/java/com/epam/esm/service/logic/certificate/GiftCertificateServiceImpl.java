@@ -46,7 +46,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             }
         }
         giftCertificate.setTags(tagsToPersist);
-
         return certificateRepository.create(giftCertificate);
     }
 
@@ -61,7 +60,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
         List<GiftCertificate> giftCertificates = certificateRepository.getAll(pageRequest);
         giftCertificates.forEach(giftCertificate -> giftCertificate.setTags(null));
-
         return giftCertificates;
     }
 
@@ -71,14 +69,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (!certificateOptional.isPresent()) {
             throw new NoSuchEntityException("certificate.not.found");
         }
-
         return certificateOptional.get();
     }
 
     @Override
     public List<GiftCertificate> getAllWithTagsWithFilteringSorting(List<String> tagNames, String partInfo,
-                                                                       List<String> sortColumns, List<String> orderTypes,
-                                                                       int page, int size) {
+                                                                    List<String> sortColumns, List<String> orderTypes,
+                                                                    int page, int size) {
         Pageable pageRequest;
         try {
             pageRequest = PageRequest.of(page, size);
@@ -90,7 +87,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             sortParameters = new SortParamsContext(sortColumns, orderTypes);
             validateSortParams(sortParameters);
         }
-
         return certificateRepository.getAllWithSortingFiltering(sortParameters, tagNames, partInfo, pageRequest);
     }
 
@@ -98,6 +94,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     public GiftCertificate updateById(long id, GiftCertificate giftCertificate) {
         Optional<GiftCertificate> giftCertificateOptional = certificateRepository.findById(id);
+
         if (!giftCertificateOptional.isPresent()) {
             throw new NoSuchEntityException("certificate.not.found");
         }
@@ -107,7 +104,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             Set<Tag> tags = giftCertificate.getTags();
             sourceCertificate.setTags(saveTags(tags));
         }
-
         return certificateRepository.update(sourceCertificate);
     }
 
