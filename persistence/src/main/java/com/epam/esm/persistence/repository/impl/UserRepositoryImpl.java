@@ -14,11 +14,6 @@ public class UserRepositoryImpl extends AbstractRepository<User>
 
     @Autowired
     protected UserRepositoryImpl(EntityManager entityManager) {
-        super(entityManager);
-    }
-
-    @Override
-    protected Class<User> getEntityType() {
-        return User.class;
+        super(entityManager, User.class);
     }
 }

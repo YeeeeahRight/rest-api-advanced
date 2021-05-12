@@ -18,16 +18,6 @@ public class CriteriaQueryBuildHelper {
         this.builder = criteriaBuilder;
     }
 
-    public <T> Predicate buildPredicateLike(Root<T> root,
-                                        String columnName, String value) {
-        return builder.like(root.get(columnName), value);
-    }
-
-    public <T> Predicate buildPredicateEqual(Root<T> root,
-                                         String columnName, Object value) {
-        return builder.equal(root.get(columnName), value);
-    }
-
     public Predicate buildAndPredicates(List<Predicate> predicates) {
         if (predicates == null || predicates.isEmpty()) {
             return null;

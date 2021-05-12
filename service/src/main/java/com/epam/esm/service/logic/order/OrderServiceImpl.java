@@ -6,6 +6,7 @@ import com.epam.esm.persistence.model.entity.User;
 import com.epam.esm.persistence.repository.GiftCertificateRepository;
 import com.epam.esm.persistence.repository.OrderRepository;
 import com.epam.esm.persistence.repository.UserRepository;
+import com.epam.esm.service.exception.ExceptionMessageKey;
 import com.epam.esm.service.exception.InvalidParametersException;
 import com.epam.esm.service.exception.NoSuchEntityException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,12 +41,12 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         Optional<User> userOptional = userRepository.findById(userId);
         if (!userOptional.isPresent()) {
-            throw new NoSuchEntityException("user.not.found");
+            throw new NoSuchEntityException(ExceptionMessageKey.USER_NOT_FOUND);
         }
         order.setUser(userOptional.get());
         Optional<GiftCertificate> certificateOptional = certificateRepository.findById(certificateId);
         if (!certificateOptional.isPresent()) {
-            throw new NoSuchEntityException("certificate.not.found");
+            throw new NoSuchEntityException(ExceptionMessageKey.CERTIFICATE_NOT_FOUND);
         }
         GiftCertificate certificate = certificateOptional.get();
         order.setCertificate(certificate);
@@ -59,13 +60,13 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getAllByUserId(long userId, int page, int size) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (!optionalUser.isPresent()) {
-            throw new NoSuchEntityException("user.not.found");
+            throw new NoSuchEntityException(ExceptionMessageKey.USER_NOT_FOUND);
         }
         Pageable pageRequest;
         try {
             pageRequest = PageRequest.of(page, size);
         } catch (IllegalArgumentException e) {
-            throw new InvalidParametersException("pagination.invalid");
+            throw new InvalidParametersException(ExceptionMessageKey.INVALID_PAGINATION);
         }
 
         return orderRepository.getAllByUserId(userId, pageRequest);
@@ -76,17 +77,17 @@ public class OrderServiceImpl implements OrderService {
     public Order getByUserId(long userId, long orderId) {
         Optional<Order> orderOptional = orderRepository.findById(orderId);
         if (!orderOptional.isPresent()) {
-            throw new NoSuchEntityException("order.not.found");
+            throw new NoSuchEntityException(ExceptionMessageKey.ORDER_NOT_FOUND);
         }
         Optional<User> optionalUser = userRepository.findById(userId);
         if (!optionalUser.isPresent()) {
-            throw new NoSuchEntityException("user.not.found");
+            throw new NoSuchEntityException(ExceptionMessageKey.USER_NOT_FOUND);
         }
         Order order = orderOptional.get();
         User user = optionalUser.get();
         List<Order> orders = user.getOrders();
         if (orders == null || orders.isEmpty() || !orders.contains(order)) {
-            throw new NoSuchEntityException("order.not.found");
+            throw new NoSuchEntityException(ExceptionMessageKey.ORDER_NOT_FOUND);
         }
 
         return order;

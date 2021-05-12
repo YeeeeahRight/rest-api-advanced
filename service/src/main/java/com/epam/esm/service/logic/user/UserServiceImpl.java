@@ -2,6 +2,7 @@ package com.epam.esm.service.logic.user;
 
 import com.epam.esm.persistence.model.entity.User;
 import com.epam.esm.persistence.repository.UserRepository;
+import com.epam.esm.service.exception.ExceptionMessageKey;
 import com.epam.esm.service.exception.InvalidParametersException;
 import com.epam.esm.service.exception.NoSuchEntityException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class UserServiceImpl implements UserService {
         try {
             pageRequest = PageRequest.of(page, size);
         } catch (IllegalArgumentException e) {
-            throw new InvalidParametersException("pagination.invalid");
+            throw new InvalidParametersException(ExceptionMessageKey.INVALID_PAGINATION);
         }
 
         return userRepository.getAll(pageRequest);
@@ -43,7 +44,7 @@ public class UserServiceImpl implements UserService {
     public User getById(long id) {
         Optional<User> userOptional = userRepository.findById(id);
         if (!userOptional.isPresent()) {
-            throw new NoSuchEntityException("user.not.found");
+            throw new NoSuchEntityException(ExceptionMessageKey.USER_NOT_FOUND);
         }
         return userOptional.get();
     }

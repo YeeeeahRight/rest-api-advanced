@@ -4,7 +4,6 @@ import com.epam.esm.persistence.config.TestJpaConfig;
 import com.epam.esm.persistence.model.entity.GiftCertificate;
 import com.epam.esm.persistence.model.entity.Tag;
 import com.epam.esm.persistence.model.SortParamsContext;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,12 +25,10 @@ import java.util.*;
 @SpringBootTest(classes = TestJpaConfig.class)
 @Transactional
 public class GiftCertificateRepositoryImplTest {
-    private static final GiftCertificate CERTIFICATE_TO_CREATE = new GiftCertificate("certificate new", "description new", new BigDecimal("1.10"),
+    private static final GiftCertificate CERTIFICATE_TO_CREATE = new GiftCertificate(
+            "certificate new", "description new", new BigDecimal("1.10"),
             LocalDateTime.parse("2020-01-01T01:11:11").atZone(ZoneId.of("Europe/Moscow")),
             LocalDateTime.parse("2021-01-01T01:22:11").atZone(ZoneId.of("Europe/Moscow")), 1);
-    private static final Tag FIRST_TAG = new Tag(1L, "tag 1");
-    private static final Tag SECOND_TAG = new Tag(2L, "tag 2");
-    private static final Tag THIRD_TAG = new Tag(3L, "tag 3");
     private static final GiftCertificate FIRST_CERTIFICATE = new GiftCertificate(
             1L, "certificate 1", "description 1", new BigDecimal("1.10"),
             LocalDateTime.parse("2020-01-01T01:11:11").atZone(ZoneId.of("Europe/Moscow")),
@@ -44,6 +41,9 @@ public class GiftCertificateRepositoryImplTest {
             3L, "certificate 3", "description 3", new BigDecimal("3.30"),
             LocalDateTime.parse("2020-03-03T03:33:33").atZone(ZoneId.of("Europe/Moscow")),
             LocalDateTime.parse("2021-03-03T03:44:33").atZone(ZoneId.of("Europe/Moscow")), 3);
+    private static final Tag FIRST_TAG = new Tag(1L, "tag 1");
+    private static final Tag SECOND_TAG = new Tag(2L, "tag 2");
+    private static final Tag THIRD_TAG = new Tag(3L, "tag 3");
 
     private static final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 25);
 
@@ -55,15 +55,6 @@ public class GiftCertificateRepositoryImplTest {
 
     @Autowired
     private GiftCertificateRepository certificateRepository;
-
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    @After
-    public void flush() {
-        entityManager.flush();
-    }
-
 
     @Test
     public void testCreateCertificateShouldCreate() {
@@ -139,6 +130,7 @@ public class GiftCertificateRepositoryImplTest {
         GiftCertificate updatedCertificate = certificateRepository.update(FIRST_CERTIFICATE);
         //then
         Assert.assertEquals(updatedCertificate.getName(), "new name");
+
         FIRST_CERTIFICATE.setName(savedName);
     }
 

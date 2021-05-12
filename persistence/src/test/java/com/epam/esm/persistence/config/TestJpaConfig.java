@@ -19,8 +19,6 @@ import java.util.Properties;
 
 @Configuration
 @ComponentScan("com.epam.esm")
-@EntityScan("com.epam.esm.entity")
-@EnableTransactionManagement
 public class TestJpaConfig {
     private static final String SQL_INIT = "classpath:db_init.sql";
     private static final String SQL_SETUP = "classpath:db_setup.sql";

@@ -55,7 +55,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         try {
             pageRequest = PageRequest.of(page, size);
         } catch (IllegalArgumentException e) {
-            throw new InvalidParametersException("pagination.invalid");
+            throw new InvalidParametersException(ExceptionMessageKey.INVALID_PAGINATION);
         }
 
         List<GiftCertificate> giftCertificates = certificateRepository.getAll(pageRequest);
@@ -67,7 +67,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public GiftCertificate getById(long id) {
         Optional<GiftCertificate> certificateOptional = certificateRepository.findById(id);
         if (!certificateOptional.isPresent()) {
-            throw new NoSuchEntityException("certificate.not.found");
+            throw new NoSuchEntityException(ExceptionMessageKey.CERTIFICATE_NOT_FOUND);
         }
         return certificateOptional.get();
     }
@@ -80,7 +80,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         try {
             pageRequest = PageRequest.of(page, size);
         } catch (IllegalArgumentException e) {
-            throw new InvalidParametersException("pagination.invalid");
+            throw new InvalidParametersException(ExceptionMessageKey.INVALID_PAGINATION);
         }
         SortParamsContext sortParameters = null;
         if (sortColumns != null) {
@@ -96,7 +96,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         Optional<GiftCertificate> giftCertificateOptional = certificateRepository.findById(id);
 
         if (!giftCertificateOptional.isPresent()) {
-            throw new NoSuchEntityException("certificate.not.found");
+            throw new NoSuchEntityException(ExceptionMessageKey.CERTIFICATE_NOT_FOUND);
         }
         GiftCertificate sourceCertificate = giftCertificateOptional.get();
         setUpdatedFields(sourceCertificate, giftCertificate);
@@ -112,7 +112,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public void deleteById(long id) {
         Optional<GiftCertificate> certificateOptional = certificateRepository.findById(id);
         if (!certificateOptional.isPresent()) {
-            throw new NoSuchEntityException("certificate.not.found");
+            throw new NoSuchEntityException(ExceptionMessageKey.CERTIFICATE_NOT_FOUND);
         }
         certificateRepository.deleteById(id);
     }
@@ -149,7 +149,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private void validateSortParams(SortParamsContext sortParameters) {
         if (!sortParametersValidator.isValid(sortParameters)) {
-            throw new InvalidParametersException("sort.params.invalid");
+            throw new InvalidParametersException(ExceptionMessageKey.SORT_PARAMS_INVALID);
         }
     }
 

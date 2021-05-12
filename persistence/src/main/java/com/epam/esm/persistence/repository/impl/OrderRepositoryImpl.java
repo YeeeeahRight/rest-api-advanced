@@ -20,12 +20,7 @@ public class OrderRepositoryImpl extends AbstractRepository<Order> implements Or
 
     @Autowired
     public OrderRepositoryImpl(EntityManager entityManager) {
-        super(entityManager);
-    }
-
-    @Override
-    protected Class<Order> getEntityType() {
-        return Order.class;
+        super(entityManager, Order.class);
     }
 
     @Override

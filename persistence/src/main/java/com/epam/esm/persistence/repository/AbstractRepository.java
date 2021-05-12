@@ -27,16 +27,17 @@ public abstract class AbstractRepository<T extends AbstractEntity> implements En
 
     @PersistenceContext
     protected final EntityManager entityManager;
+
     protected final CriteriaBuilder builder;
     protected final CriteriaQueryBuildHelper buildHelper;
+    protected final Class<T> entityType;
 
-    protected AbstractRepository(EntityManager entityManager) {
+    protected AbstractRepository(EntityManager entityManager, Class<T> entityType) {
         this.entityManager = entityManager;
+        this.entityType = entityType;
         this.builder = entityManager.getCriteriaBuilder();
         this.buildHelper = new CriteriaQueryBuildHelper(this.builder);
     }
-
-    protected abstract Class<T> getEntityType();
 
     @Override
     public T create(T entity) {
@@ -46,8 +47,8 @@ public abstract class AbstractRepository<T extends AbstractEntity> implements En
 
     @Override
     public List<T> getAll(Pageable pageable) {
-        CriteriaQuery<T> query = builder.createQuery(getEntityType());
-        Root<T> variableRoot = query.from(getEntityType());
+        CriteriaQuery<T> query = builder.createQuery(entityType);
+        Root<T> variableRoot = query.from(entityType);
         query.select(variableRoot);
 
         return entityManager.createQuery(query)
@@ -63,8 +64,8 @@ public abstract class AbstractRepository<T extends AbstractEntity> implements En
 
     @Override
     public Optional<T> findByField(String fieldName, Object value) {
-        CriteriaQuery<T> entityQuery = builder.createQuery(getEntityType());
-        Root<T> entityRoot = entityQuery.from(getEntityType());
+        CriteriaQuery<T> entityQuery = builder.createQuery(entityType);
+        Root<T> entityRoot = entityQuery.from(entityType);
         entityQuery.select(entityRoot);
 
         Predicate fieldPredicate = builder.equal(entityRoot.get(fieldName), value);
@@ -81,7 +82,7 @@ public abstract class AbstractRepository<T extends AbstractEntity> implements En
 
     @Override
     public void deleteById(long id) {
-        T entity = entityManager.find(getEntityType(), id);
+        T entity = entityManager.find(entityType, id);
         if (entity != null) {
             entityManager.remove(entity);
         }

@@ -21,12 +21,7 @@ public class GiftCertificateRepositoryImpl extends AbstractRepository<GiftCertif
 
     @Autowired
     public GiftCertificateRepositoryImpl(EntityManager entityManager) {
-        super(entityManager);
-    }
-
-    @Override
-    protected Class<GiftCertificate> getEntityType() {
-        return GiftCertificate.class;
+        super(entityManager, GiftCertificate.class);
     }
 
     @Override

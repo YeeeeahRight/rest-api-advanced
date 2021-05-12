@@ -15,15 +15,11 @@ import java.util.*;
 @Repository
 @Transactional
 public class TagRepositoryImpl extends AbstractRepository<Tag> implements TagRepository {
+    private static final String BEST_TAG_MAPPING_NAME = "BestTagMapping";
 
     @Autowired
     protected TagRepositoryImpl(EntityManager entityManager) {
-        super(entityManager);
-    }
-
-    @Override
-    protected Class<Tag> getEntityType() {
-        return Tag.class;
+        super(entityManager, Tag.class);
     }
 
     @Override
@@ -34,8 +30,7 @@ public class TagRepositoryImpl extends AbstractRepository<Tag> implements TagRep
     @Override
     public Optional<BestUserTag> findUserMostWidelyUsedTagWithHighestOrderCost(long userId) {
         Query query = entityManager.createNativeQuery(
-                NativeQuery.MOST_WIDELY_USED_WITH_HIGHEST_ORDER_COST_TAG_QUERY,
-                "BestTagMapping");
+                NativeQuery.MOST_WIDELY_USED_WITH_HIGHEST_ORDER_COST_TAG_QUERY, BEST_TAG_MAPPING_NAME);
         query.setParameter("userId", userId);
 
         return buildHelper.getOptionalQueryResult(query);
