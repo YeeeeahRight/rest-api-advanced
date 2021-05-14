@@ -19,8 +19,6 @@ import java.util.Properties;
 
 @Configuration
 @ComponentScan("com.epam.esm")
-@EntityScan("com.epam.esm.entity")
-@EnableTransactionManagement
 public class TestJpaConfig {
     private static final String SQL_INIT = "classpath:db_init.sql";
     private static final String SQL_SETUP = "classpath:db_setup.sql";
@@ -46,7 +44,7 @@ public class TestJpaConfig {
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(embeddedDatabase());
-        sessionFactory.setPackagesToScan("com.epam.esm.persistence.entity");
+        sessionFactory.setPackagesToScan("com.epam.esm.persistence.model.entity");
         sessionFactory.setHibernateProperties(hibernateProperties());
         return sessionFactory;
     }

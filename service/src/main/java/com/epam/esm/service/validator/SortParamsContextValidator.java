@@ -1,7 +1,7 @@
 package com.epam.esm.service.validator;
 
-import com.epam.esm.persistence.entity.GiftCertificate;
-import com.epam.esm.persistence.query.SortParamsContext;
+import com.epam.esm.persistence.model.SortParamsContext;
+import com.epam.esm.persistence.model.entity.GiftCertificate;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

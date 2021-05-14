@@ -1,5 +1,7 @@
 package com.epam.esm.persistence.repository;
 
+import com.epam.esm.persistence.model.entity.AbstractEntity;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +11,7 @@ import java.util.Optional;
  *
  * @param <T> the type of entities
  */
-public interface EntityRepository<T> {
+public interface EntityRepository<T extends AbstractEntity> {
 
     /**
      * Creates new entity
@@ -22,9 +24,10 @@ public interface EntityRepository<T> {
     /**
      * Gets all entities.
      *
+     * @param pageable object with pagination info(page number, page size)
      * @return List of founded entities
      */
-    List<T> getAll();
+    List<T> getAll(Pageable pageable);
 
     /**
      * Finds entity by id.
